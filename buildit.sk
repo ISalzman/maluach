@@ -1,0 +1,70 @@
+#!/bin/sh
+
+APPNAME=maluach
+EXEFILE=${APPNAME}.exe
+KITFILE=${APPNAME}.kit
+BATFILE=${APPNAME}.bat
+
+VFSDIR=${APPNAME}.vfs
+LIBDIR=${VFSDIR}/lib
+INFFILE=${VFSDIR}/tclkit.inf
+MAINFILE=${VFSDIR}/main.tcl
+PKGLIST="
+    lib/Astro
+"
+
+PKGVER=1.0
+PKGNAME=app-maluach
+PKGDIR=${LIBDIR}/${PKGNAME}
+PKGMAIN=Maluach.tcl
+PKGINIT="::Maluach::Init"
+PKGFILES="
+    Maluach.tcl
+"
+
+TCLKIT=/c/programs/tcl/bin/tclkitsh-8.5.8-win32.upx.exe
+#TCLKIT=/c/programs/tcl/bin/tclkit-8.5.8-win32.upx.exe
+#TCLKIT=/c/programs/tcl/bin/base-tcl8.5-thread-win32-ix86.exe
+#TCLKIT=/c/programs/tcl/bin/base-tk8.5-thread-win32-ix86.exe
+
+rm -f $KITFILE
+rm -f $EXEFILE
+rm -rf $VFSDIR
+
+mkdir -pv $VFSDIR
+mkdir -pv $LIBDIR
+mkdir -pv $PKGDIR
+
+echo "#!/bin/env tclsh
+
+package require starkit
+starkit::startup
+#if {[starkit::startup] eq "sourced"} return
+
+#package require $PKGNAME
+lappend ::auto_path [file join $::starkit::topdir lib $PKGNAME]
+
+${PKGINIT}" > $MAINFILE
+
+echo "Comments \"\"
+CompanyName \"Some Company\"
+FileDescription \"Tclsh Application\"
+FileVersion \"8.5.8\"
+InternalName \"maluach\"
+LegalCopyright \"Copyright (c) 2010 by Some Company\"
+LegalTrademarks \"\"
+OriginalFilename \"maluach.exe\"
+ProductName \"Maluach\"
+ProductVersion \"1.0.0.1\"" > $INFFILE
+
+for pkg in $PKGLIST; do
+    cp -rpv $pkg $LIBDIR
+done
+
+cp -pv $PKGFILES $PKGDIR
+echo auto_mkindex $PKGDIR *.tcl | tclsh
+#echo "package provide $PKGNAME $PKGVER" | cat - $PKGMAIN > ${PKGDIR}/${PKGMAIN}
+#echo pkg_mkIndex $PKGDIR *.tcl | tclsh
+
+sdx wrap $EXEFILE -verbose -runtime $TCLKIT
+sdx wrap $KITFILE; rm -f $BATFILE
