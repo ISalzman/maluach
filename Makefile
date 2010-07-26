@@ -5,7 +5,7 @@ export APPNAME := maluach
 
 VFSSRCS := main.tcl tclkit.inf
 APPMAIN := Maluach.tcl
-APPSRCS := $(APPMAIN) pkgIndex.tcl
+APPSRCS := $(APPMAIN) Location.tcl pkgIndex.tcl
 
 APPVDIR = $(VFSLIB)/app-$(APPNAME)
 VFSOBJS = $(addprefix $(VFSDIR)/,$(VFSSRCS))
@@ -15,7 +15,7 @@ EXTRA_CLEAN_FILES = $(APPNAME).exe $(APPNAME).kit $(APPNAME).bat
 EXTRA_NAGELFAR_FILES := Astro/Astro.tcl
 
 APPLIBS := Astro DafYomi
-EXTLIBS :=
+EXTLIBS := snit
 PACKAGES := $(APPLIBS) $(EXTLIBS)
 
 include $(TOPDIR)/common.mk
@@ -48,6 +48,7 @@ $(EXTLIBS): $(VFSLIB)
 	$(CP) $(@)/* $(VFSLIB)/$@
 
 vfsclean:
+	-$(RM) -r $(addprefix $(VFSLIB)/,$(EXTLIBS))
 	-$(RM) $(VFSOBJS) $(APPOBJS)
 	-$(RMDIR) $(APPVDIR)
 	-$(RMDIR) $(VFSLIB)
