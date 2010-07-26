@@ -63,10 +63,10 @@ tclIndex: $(APPSRCS) $(LIBSRCS)
 	echo 'auto_mkindex . $(APPSRCS) $(LIBSRCS)' | $(TCLSH)
 
 clean: subdirs vfsclean
-	-$(RM) tclIndex pkgIndex.tcl $(EXTRA_CLEAN_FILES)
+	-$(RM) tclIndex $(EXTRA_CLEAN_FILES)
 
 distclean: clean
-	-$(RM) tags header
+	-$(RM) tags header pkgIndex.tcl
 
 update: subdirs tags header pkgIndex.tcl
 
