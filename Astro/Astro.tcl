@@ -3,7 +3,7 @@ package require Tcl 8.5
 package provide Astro 1.0
 
 namespace eval ::Astro {
-    variable library [file dirname [info script]]
+    variable library [file normalize [file dirname [info script]]]
 
     namespace export toRadians toDegrees normalize360 normalize180 normalize24
 
