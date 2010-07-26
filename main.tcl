@@ -1,10 +1,19 @@
 #!/bin/env tclsh
 
+package require Tcl 8.5
 package require starkit
 
-if {[starkit::startup] eq "sourced"} {return}
-if {[starkit::startup] eq "unwrapped"} {
-    lappend ::auto_path [file normalize .]
+switch -exact -- [starkit::startup] {
+    sourced {return}
+
+    unwrapped {
+	starkit::autoextend [file normalize [file dirname [info script]]]
+    }
+
+    starkit -
+    starpack {}
+
+    default {}
 }
 
 package require app-maluach
