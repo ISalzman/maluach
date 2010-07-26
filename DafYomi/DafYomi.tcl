@@ -4,7 +4,7 @@ package require msgcat
 package provide DafYomi 1.0
 
 namespace eval ::DafYomi {
-    variable library [file dirname [info script]]
+    variable library [file normalize [file dirname [info script]]]
 
     proc Init {{locale ""}} {
 	variable dafyomi
@@ -91,7 +91,7 @@ namespace eval ::DafYomi {
 	    dict set dafyomi(shas) Shekalim {2 13}
 	    set daf [expr {abs($day - $dafyomi(oldepoch)) % $dafyomi(oldtotal)}]
 	} else {
-	    return ""
+	    return -code error "The date given is prior to organized Daf Yomi cycles."
 	}
 
 	set daf [expr {$daf / 86400}]
