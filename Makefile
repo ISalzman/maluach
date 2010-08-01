@@ -1,6 +1,6 @@
 
 TOPDIR := .
-SUBDIRS := Astro DafYomi
+SUBDIRS := Astro DafYomi Zmanim
 export APPNAME := maluach
 
 VFSSRCS := main.tcl tclkit.inf
@@ -14,7 +14,7 @@ APPOBJS = $(addprefix $(APPVDIR)/,$(APPSRCS))
 EXTRA_CLEAN_FILES = $(APPNAME).exe $(APPNAME).kit $(APPNAME).bat
 EXTRA_NAGELFAR_FILES := Astro/Astro.tcl
 
-APPLIBS := Astro DafYomi
+APPLIBS := Astro DafYomi Zmanim
 EXTLIBS := snit
 PACKAGES := $(APPLIBS) $(EXTLIBS)
 
