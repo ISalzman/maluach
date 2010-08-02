@@ -19,6 +19,7 @@ namespace eval ::Zmanim {
 	    Hanetz			ceil	\
 	    Chatzos			floor	\
 	    Shekiah			floor	\
+	    Neiros18			floor	\
 	    Tzeis45			ceil	\
 	    Tzeis72			ceil	\
 	    Tzeis8.5			ceil	\
@@ -139,6 +140,11 @@ namespace eval ::Zmanim {
     proc Misheyakir11.5 {year month day longitude latitude timezone} {
 	set misheyakir [Hanetz $year $month $day $longitude $latitude $timezone -11.5]
 	return $misheyakier
+    }
+
+    proc Neiros18 {year month day longitude latitude timezone} {
+	set shekiah [Shekiah $year $month $day $longitude $latitude $timezone]
+	return [expr {$shekiah - (18.0 / 60.0)}]
     }
 
     proc Tzeis45 {year month day longitude latitude timezone} {
