@@ -290,7 +290,7 @@ namespace eval ::Zmanim {
     }
 
     proc TZoffset {year month day timezone} {
-	set today [clock scan "$month/$day/$year" -format "%N/%e/%Y"]
+	set today [clock scan "$month/$day/$year" -format "%m/%d/%Y"]
 	set tz [clock format $today -format "%z" -timezone $timezone]
 
 	scan $tz "%3d%2d" tzh tzm
@@ -313,7 +313,7 @@ namespace eval ::Zmanim {
 	    set zman [expr {int($zman * 60)}]
 	}
 
-	set today [clock scan "$month/$day/$year" -format "%N/%e/%Y"]
+	set today [clock scan "$month/$day/$year" -format "%m/%d/%Y"]
 	set seconds [clock add $today $zman seconds -timezone $timezone]
 
 	return $seconds
