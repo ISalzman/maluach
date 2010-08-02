@@ -39,7 +39,7 @@ snit::type Calendar {
 	return
     }
 
-    method Zman {zmanName args} {
+    method zman {zmanName args} {
 	if {[info proc ::Zmanim::$zmanName] eq ""} {
 	    return -code error "Invalid zman \"$zmanName\"."
 	}
@@ -55,12 +55,12 @@ snit::type Calendar {
 	if {$zmanName eq "MinchahGedolahGRA" && [lindex $args 0] eq "strict"} {
 	    lappend arglist 1
 	}
-	set zman [::Zmanim::$zmanName {*}$arglist]
 
-	return [::Zmanim::Format $zman $zmanName $year $month $day $timezone]
+	set zmanhr [::Zmanim::$zmanName {*}$arglist]
+	return [::Zmanim::Format $zmanhr $zmanName $year $month $day $timezone]
     }
 
-    method DafYomi {args} {
+    method dafyomi {args} {
 	set year [$options(-date) cget -year]
 	set month [$options(-date) cget -month]
 	set day [$options(-date) cget -day]
