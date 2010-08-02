@@ -11,6 +11,7 @@ snit::type Date {
 	}
 
 	$self configurelist $args
+	return
     }
 
     method SetOption {option value} {
@@ -53,6 +54,20 @@ snit::type Date {
 	}
 
 	return
+    }
+
+    method format {{fmt ""}} {
+	if {$fmt eq ""} {
+	    #set fmt "%m/%d/%Y"
+	    set fmt "%D"
+	}
+
+	set date [clock scan "$options(-year)/$options(-month)/$options(-day)" -format "%Y/%m/%d"]
+	return [clock format $date -format $fmt]
+    }
+
+    method timeval {args} {
+	return [clock scan "$options(-year)/$options(-month)/$options(-day)" -format "%Y/%m/%d"]
     }
 }
 
