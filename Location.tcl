@@ -17,9 +17,9 @@ snit::type Location {
 	    $self configurelist $args
 	}
 
-	foreach opt {-name -latitude -longitude -timezone} {
+	foreach opt [array names options] {
 	    if {$options($opt) eq ""} {
-		return -code error ""
+		return -code error "Missing value for \"$opt\"."
 	    }
 	}
 
