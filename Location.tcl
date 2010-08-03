@@ -27,14 +27,17 @@ snit::type Location {
     }
 
     typemethod dms2deg {deg min sec} {
-	set deg [expr {$deg + (($min + ($sec / 60.0)) / 60.0)}]
-	return $deg
+	return [expr {$deg + (($min + ($sec / 60.0)) / 60.0)}]
+    }
+
+    typemethod deg2dms {deg} {
+	return [concat [expr {int($deg)}] [clock format [expr {round($deg*3600)}] -format "%M %S" -timezone :UTC]]
     }
 
     method SetLatitude {option value} {
 	if {[llength $value] > 1} {
 	    foreach {deg min sec dir} $value {break;}
-	    set value [$type dms2deg $deg $min $sec]
+	    set value [$type dms2deg {*}[scan "$deg $min $sec" "%d %d %d"]]
 
 	    if {$value > 90 || $value < 0} {
 		return -code error "Latitude must be between 0 and 90 degrees. Use S direction to indicate negative."
@@ -58,7 +61,7 @@ snit::type Location {
     method SetLongitude {option value} {
 	if {[llength $value] > 1} {
 	    foreach {deg min sec dir} $value {break;}
-	    set value [$type dms2deg $deg $min $sec]
+	    set value [$type dms2deg {*}[scan "$deg $min $sec" "%d %d %d"]]
 
 	    if {$value > 180 || $value < 0} {
 		return -code error "Longitude must be between 0 and 180 degrees. Use E direction to indicate negative."
