@@ -5,7 +5,14 @@ snit::type Date {
     option -day -configuremethod SetOption
 
     constructor {args} {
-	foreach {year month day} [split [clock format [clock seconds] -format "%Y/%m/%d"] /] {break;}
+	if {[llength $args] == 1 && [string is integer [lindex $args 0]]} {
+	    set date [lindex $args 0]
+	    set args [list]
+	} else {
+	    set date [clock seconds]
+	}
+
+	foreach {year month day} [split [clock format $date -format "%Y/%m/%d"] /] {break;}
 	foreach opt {year month day} {
 	    set options(-$opt) [scan [set $opt] "%d"]
 	}
