@@ -122,24 +122,24 @@ namespace eval ::Zmanim {
 	return $alos
     }
 
-    proc Mishayakir45 {year month day longitude latitude timezone} {
+    proc Misheyakir45 {year month day longitude latitude timezone} {
 	set hanetz [Hanetz $year $month $day $longitude $latitude $timezone]
 	return [expr {$hanetz - (45.0 / 60.0)}]
     }
 
     proc Misheyakir10.2 {year month day longitude latitude timezone} {
 	set misheyakir [Hanetz $year $month $day $longitude $latitude $timezone -10.2]
-	return $misheyakier
+	return $misheyakir
     }
 
     proc Misheyakir11.0 {year month day longitude latitude timezone} {
 	set misheyakir [Hanetz $year $month $day $longitude $latitude $timezone -11.0]
-	return $misheyakier
+	return $misheyakir
     }
 
     proc Misheyakir11.5 {year month day longitude latitude timezone} {
 	set misheyakir [Hanetz $year $month $day $longitude $latitude $timezone -11.5]
-	return $misheyakier
+	return $misheyakir
     }
 
     proc Neiros18 {year month day longitude latitude timezone} {
@@ -202,14 +202,11 @@ namespace eval ::Zmanim {
 	set zmanis [ShaahZmanisGRA $year $month $day $longitude $latitude $timezone]
 	set hanetz [Hanetz $year $month $day $longitude $latitude $timezone]
 
-	set halfzmanis [expr {$hanetz + ($zmanis * 6.5)}]
-	set halfhour [expr {$hanetz + ($zmanis * 6.5)}]
-
-	if {$strict && ($halfzmanis < $halfhour)} {
-	    return $halfhour
+	if {$strict && $zmanis < 1.0} {
+	    return [expr {$hanetz + ($zmanis * 6.0) + 0.5}]
 	}
 
-	return $halfzmanis
+	return [expr {$hanetz + ($zmanis * 6.5)}]
     }
 
     proc MinchahKetanahGRA {year month day longitude latitude timezone} {
@@ -282,7 +279,7 @@ namespace eval ::Zmanim {
 	return [expr {$alos + ($zmanis * 9.5)}]
     }
 
-    proc PlagHaMinchahMA72 {year month day longitude latitude timezone} {
+    proc PlagHaminchahMA72 {year month day longitude latitude timezone} {
 	set zmanis [ShaahZmanisMA72 $year $month $day $longitude $latitude $timezone]
 	set alos [Alos72 $year $month $day $longitude $latitude $timezone]
 
@@ -324,7 +321,7 @@ namespace eval ::Zmanim {
 
 	if {$format eq ""} {
 	    if {[string match {ShaahZmanis*} $type]} {
-		set format "%l:%M:%S"
+		set format "%k:%M:%S"
 	    } elseif {[KeepSeconds]} {
 		#set format "%l:%M:%S%P"
 		set format "%k:%M:%S"
