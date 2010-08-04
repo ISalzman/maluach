@@ -31,7 +31,42 @@ snit::type Location {
     }
 
     typemethod deg2dms {deg} {
-	return [concat [expr {int($deg)}] [clock format [expr {round($deg*3600)}] -format "%M %S" -timezone :UTC]]
+	set d [expr {int($deg)}]
+
+	set min [expr {($deg - $d) * 60.0}]
+	set m [expr {int($min)}]
+
+	set sec [expr {($min - $m) * 60.0}]
+	set s [expr {int(round($sec))}]
+
+	# Cute trick found on Tcl Wiki that uses clock magic
+	#return [concat [expr {int($deg)}]\u00B0 [clock format [expr {round($deg*3600)}] -format "%M' %S\"" -timezone :UTC]]
+
+	return [list $d $m $s]
+    }
+
+    method getLongitudeDMS {} {
+	foreach {d m s} [$type deg2dms $options(-longitude)] {break;}
+
+	if {$options(-longitude) < 0} {
+	    set dir E
+	} else {
+	    set dir W
+	}
+
+	return [format "%d\u00B0%d'%d\"%s" $d $m $s $dir]
+    }
+
+    method getLatitudeDMS {} {
+	foreach {d m s} [$type deg2dms $options(-latitude)] {break;}
+
+	if {$options(-latitude) < 0} {
+	    set dir S
+	} else {
+	    set dir N
+	}
+
+	return [format "%d\u00B0%d'%d\"%s" $d $m $s $dir]
     }
 
     method SetLatitude {option value} {
