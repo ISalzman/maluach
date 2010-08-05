@@ -5,7 +5,7 @@ export APPNAME := maluach
 
 VFSSRCS := main.tcl tclkit.inf
 APPMAIN := Maluach.tcl
-APPSRCS := $(APPMAIN) Location.tcl pkgIndex.tcl
+APPSRCS := $(APPMAIN) Location.tcl Date.tcl Calendar.tcl pkgIndex.tcl
 
 APPVDIR = $(VFSLIB)/app-$(APPNAME)
 VFSOBJS = $(addprefix $(VFSDIR)/,$(VFSSRCS))
