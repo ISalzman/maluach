@@ -6,6 +6,7 @@ proc Init {} {
     set appdir [file normalize [file dirname [info script]]]
     lappend ::auto_path $appdir
 
+    package require csv
     package require snit
     package require Astro
     package require DafYomi
@@ -18,6 +19,7 @@ proc Init {} {
     Astro::Init
     Zmanim::Init
     DafYomi::Init
+    #Astro::SetCalc Meeus
 
     return
 }
@@ -276,10 +278,24 @@ set zmanNameList [list \
     Tzeis16.1 \
 ]
 
-#set beg "09/26/2010"
-#set end "10/22/2011"
-set beg "10/11/2009"
-set end "10/02/2010"
+#set beg "10/11/2009"
+#set end "10/02/2010"
+set beg "09/26/2010"
+set end "10/22/2011"
+
+set neiroslist [list]
+set neirosdates [list \
+    09/29/2010 \
+    04/18/2011 \
+    04/24/2011 \
+    06/07/2011 \
+    09/28/2011 \
+    10/12/2011 \
+    10/19/2011 \
+]
+foreach neirosdate $neirosdates {
+    lappend neiroslist [clock scan $neirosdate -format "%m/%d/%Y"]
+}
 
 if {[clock format [clock scan $beg -format "%m/%d/%Y"] -format "%w"] != 0} {
     return -code error "Start date must be a Sunday."
@@ -305,21 +321,20 @@ set loc [Location create %AUTO% \
 set day [Date create %AUTO% [clock scan $beg -format "%m/%d/%Y"]]
 set cal [Calendar create %AUTO% -date $day -location $loc]
 
-#puts stdout "\"[join $header \",\"]\""
-puts stdout "[join $header ,]"
+puts stdout [csv::join $header]
 flush stdout
 
 while {[$day timeval] <= [clock scan $end -format "%m/%d/%Y"]} {
     set week [list]
-    lappend week [string map {" " ""} [clock format [$day timeval] -format "%N/%e/%Y"]]
+    lappend week [string map {" " ""} [$day format "%N/%e/%Y"]]
     lappend week [string map {" " ""} [clock format [clock add [$day timeval] 6 days] -format "%N/%e/%Y"]]
 
     foreach zmanName $zmanNameList {
 	set zmanlist [list]
 
 	for {set dow 1} {$dow <= 7} {incr dow} {
-	    ;# Only generate Neiros for Friday
-	    if {$zmanName eq "Neiros18" && $dow != 6} {
+	    ;# Only generate Neiros for Friday and Erev Yom Tov
+	    if {$zmanName eq "Neiros18" && $dow != 6 && [$day timeval] ni $neiroslist} {
 		lappend zmanlist {}
 	    } else {
 		lappend zmanlist [$cal zman $zmanName]
@@ -348,11 +363,9 @@ while {[$day timeval] <= [clock scan $end -format "%m/%d/%Y"]} {
     }
 
     lappend week [$loc cget -name]
-    set coords "[$loc getLatitudeDMS], [$loc getLongitudeDMS]"
-    lappend week "\"[string map {\" \"\"} $coords]\""
+    lappend week "[$loc getLatitudeDMS], [$loc getLongitudeDMS]"
 
-    #puts stdout "\"[join $week \",\"]\""
-    puts stdout "[join $week ,]"
+    puts stdout [csv::join $week]
     flush stdout
 
     $day add 7 days
