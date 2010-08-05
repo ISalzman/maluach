@@ -26,24 +26,24 @@ namespace eval ::Zmanim {
 	    Tzeis16.1			ceil	\
 	    SofTaanis6.45		ceil	\
 	    SofTaanis7.12		ceil	\
-	    ShaahZmanisGRA		floor	\
+	    ShaahZmanisGRA		round	\
 	    SofZmanShemaGRA		floor	\
 	    SofZmanTefilahGRA		floor	\
 	    MinchahGedolahGRA		ceil	\
-	    MinchahKetanahGRA		ceil	\
-	    PlagHaminchahGRA		ceil	\
-	    ShaahZmanisMA72		floor	\
-	    ShaahZmanisMA16.1		floor	\
+	    MinchahKetanahGRA		floor	\
+	    PlagHaminchahGRA		floor	\
+	    ShaahZmanisMA72		round	\
+	    ShaahZmanisMA16.1		round	\
 	    SofZmanShemaMA72		floor	\
 	    SofZmanShemaMA16.1		floor	\
 	    SofZmanTefilahMA72		floor	\
-	    SofZmanTefilahMA16.1	floor   \
-	    MinchahGedolahMA72		ceil    \
-	    MinchahGedolahMA16.1	ceil    \
-	    MinchahKetanahMA72		ceil    \
-	    MinchahKetanahMA16.1	ceil    \
-	    PlagHaminchahMA72		ceil    \
-	    PlagHaminchahMA16.1		ceil    \
+	    SofZmanTefilahMA16.1	floor	\
+	    MinchahGedolahMA72		ceil	\
+	    MinchahGedolahMA16.1	ceil	\
+	    MinchahKetanahMA72		floor	\
+	    MinchahKetanahMA16.1	floor	\
+	    PlagHaminchahMA72		floor	\
+	    PlagHaminchahMA16.1		floor	\
 	]
 
 	Astro::Init
