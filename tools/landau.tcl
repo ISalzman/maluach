@@ -3,7 +3,7 @@
 package require Tcl 8.5
 
 proc Init {} {
-    set topdir [file normalize [file dirname [file dirname [info script]]]]
+    set topdir [file dirname [file dirname [file normalize [info script]]]]
     lappend ::auto_path $topdir
 
     package require csv
@@ -70,6 +70,13 @@ set header [list \
     Alos5 \
     Alos6 \
     Alos7 \
+    Tallis115D1 \
+    Tallis115D2 \
+    Tallis115D3 \
+    Tallis115D4 \
+    Tallis115D5 \
+    Tallis115D6 \
+    Tallis115D7 \
     Tallis11D1 \
     Tallis11D2 \
     Tallis11D3 \
@@ -253,6 +260,7 @@ set zmanNameList [list \
     ShaahZmanisMA72 \
     Alos16.1 \
     Alos72 \
+    Misheyakir11.5 \
     Misheyakir11.0 \
     Misheyakir10.2 \
     Misheyakir45 \
@@ -285,6 +293,8 @@ set end "10/22/2011"
 
 set neiroslist [list]
 set neirosdates [list \
+    09/08/2010 \
+    09/22/2010 \
     09/29/2010 \
     04/18/2011 \
     04/24/2011 \
