@@ -2,18 +2,42 @@
 
 package require Tcl 8.5
 
-set appdir [file normalize [file dirname [info script]]]
-lappend ::auto_path $appdir
+set topdir [file dirname [file dirname [file normalize [info script]]]]
+lappend ::auto_path $topdir
 
+package require csv
 package require DafYomi
 DafYomi::Init he
 
-set beg "09/26/2010"
+set header [list \
+    Sunday \
+    Saturday \
+    Daf0 \
+    Daf1 \
+    Daf2 \
+    Daf3 \
+    Daf4 \
+    Daf5 \
+    Daf6 \
+    Daf7 \
+]
+
+set beg "09/05/2010"
 set end "10/22/2011"
+
+if {[clock format [clock scan $beg -format "%m/%d/%Y"] -format "%w"] != 0} {
+        return -code error "Start date must be a Sunday."
+}
+if {[clock format [clock scan $end -format "%m/%d/%Y"] -format "%w"] != 6} {
+        return -code error "Start date must be a Saturday."
+}
 
 set daflist [list]
 set maslist [list]
 set day [clock scan $beg -format %D]
+
+puts stdout [csv::join $header]
+flush stdout
 
 while {$day <= [clock scan $end -format %D]} {
     set yomi [DafYomi::Daf {*}[clock format $day -format "%Y %N %e"]]
@@ -26,7 +50,12 @@ while {$day <= [clock scan $end -format %D]} {
     }
 
     if {[clock format $day -format "%a"] eq "Sat"} {
-	puts "[join $maslist -],[join $daflist ,]"
+	set datelist [list [string map {" " ""} [clock format [clock add $day -6 days] -format "%N/%e/%Y"]]]
+	lappend datelist [string map {" " ""} [clock format $day -format "%N/%e/%Y"]]
+
+	puts stdout [csv::join [list {*}$datelist [join $maslist -] {*}$daflist]]
+	flush stdout
+
 	set maslist [list]
 	set daflist [list]
     }
