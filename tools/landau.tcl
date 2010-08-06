@@ -3,8 +3,8 @@
 package require Tcl 8.5
 
 proc Init {} {
-    set appdir [file normalize [file dirname [info script]]]
-    lappend ::auto_path $appdir
+    set topdir [file normalize [file dirname [file dirname [info script]]]]
+    lappend ::auto_path $topdir
 
     package require csv
     package require snit
@@ -12,9 +12,9 @@ proc Init {} {
     package require DafYomi
     package require Zmanim
 
-    source [file join $appdir Date.tcl]
-    source [file join $appdir Location.tcl]
-    source [file join $appdir Calendar.tcl]
+    source [file join $topdir Date.tcl]
+    source [file join $topdir Location.tcl]
+    source [file join $topdir Calendar.tcl]
 
     Astro::Init
     Zmanim::Init
@@ -280,7 +280,7 @@ set zmanNameList [list \
 
 #set beg "10/11/2009"
 #set end "10/02/2010"
-set beg "09/26/2010"
+set beg "09/05/2010"
 set end "10/22/2011"
 
 set neiroslist [list]
@@ -315,6 +315,13 @@ set loc [Location create %AUTO% \
     -name "Pico / Robertson" \
     -longitude "118 23 1 W" \
     -latitude "34 3 17 N" \
+    -timezone "America/Los_Angeles" \
+]
+
+#set loc [Location create %AUTO% \
+    -name "City of Hope" \
+    -longitude "117 58 15 W" \
+    -latitude "34 7 46 N" \
     -timezone "America/Los_Angeles" \
 ]
 
