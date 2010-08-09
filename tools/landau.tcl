@@ -9,8 +9,8 @@ proc Init {} {
     package require csv
     package require snit
     package require Astro
-    package require DafYomi
     package require Zmanim
+    package require DafYomi
 
     source [file join $topdir Date.tcl]
     source [file join $topdir Location.tcl]
@@ -19,7 +19,9 @@ proc Init {} {
     Astro::Init
     Zmanim::Init
     DafYomi::Init
+
     #Astro::SetCalc Meeus
+    #DafYomi::SetLocale he
 
     return
 }
@@ -37,223 +39,48 @@ proc TimeCompare {time1 time2} {
     }
 }
 
-Init
+proc Header {} {
+    set header [list]
+    set zerolist [list \
+	ShemaMD ShemaM ShemaG \
+	TefilaMD TefilaM TefilaG \
+    ]
+    set columns [list \
+	ZmanisG ZmanisM \
+	AlosD Alos \
+	Tallis115D Tallis11D TallisD Tallis \
+	Hanetz \
+	ShemaMD ShemaM ShemaG \
+	TefilaMD TefilaM TefilaG \
+	Chatzos \
+	GedolaG GedolaS GedolaM \
+	KetanaG KetanaM \
+	PlagG PlagM \
+	Neiros \
+	Shekia \
+	TzeisD Tzeis Tam TamD \
+    ]
 
-set header [list \
-    Sunday \
-    Saturday \
-    ZmanisG1 \
-    ZmanisG2 \
-    ZmanisG3 \
-    ZmanisG4 \
-    ZmanisG5 \
-    ZmanisG6 \
-    ZmanisG7 \
-    ZmanisM1 \
-    ZmanisM2 \
-    ZmanisM3 \
-    ZmanisM4 \
-    ZmanisM5 \
-    ZmanisM6 \
-    ZmanisM7 \
-    AlosD1 \
-    AlosD2 \
-    AlosD3 \
-    AlosD4 \
-    AlosD5 \
-    AlosD6 \
-    AlosD7 \
-    Alos1 \
-    Alos2 \
-    Alos3 \
-    Alos4 \
-    Alos5 \
-    Alos6 \
-    Alos7 \
-    Tallis115D1 \
-    Tallis115D2 \
-    Tallis115D3 \
-    Tallis115D4 \
-    Tallis115D5 \
-    Tallis115D6 \
-    Tallis115D7 \
-    Tallis11D1 \
-    Tallis11D2 \
-    Tallis11D3 \
-    Tallis11D4 \
-    Tallis11D5 \
-    Tallis11D6 \
-    Tallis11D7 \
-    TallisD1 \
-    TallisD2 \
-    TallisD3 \
-    TallisD4 \
-    TallisD5 \
-    TallisD6 \
-    TallisD7 \
-    Tallis1 \
-    Tallis2 \
-    Tallis3 \
-    Tallis4 \
-    Tallis5 \
-    Tallis6 \
-    Tallis7 \
-    Hanetz1 \
-    Hanetz2 \
-    Hanetz3 \
-    Hanetz4 \
-    Hanetz5 \
-    Hanetz6 \
-    Hanetz7 \
-    ShemaMD0 \
-    ShemaMD1 \
-    ShemaMD2 \
-    ShemaMD3 \
-    ShemaMD4 \
-    ShemaMD5 \
-    ShemaMD6 \
-    ShemaMD7 \
-    ShemaM0 \
-    ShemaM1 \
-    ShemaM2 \
-    ShemaM3 \
-    ShemaM4 \
-    ShemaM5 \
-    ShemaM6 \
-    ShemaM7 \
-    ShemaG0 \
-    ShemaG1 \
-    ShemaG2 \
-    ShemaG3 \
-    ShemaG4 \
-    ShemaG5 \
-    ShemaG6 \
-    ShemaG7 \
-    TefilaMD0 \
-    TefilaMD1 \
-    TefilaMD2 \
-    TefilaMD3 \
-    TefilaMD4 \
-    TefilaMD5 \
-    TefilaMD6 \
-    TefilaMD7 \
-    TefilaM0 \
-    TefilaM1 \
-    TefilaM2 \
-    TefilaM3 \
-    TefilaM4 \
-    TefilaM5 \
-    TefilaM6 \
-    TefilaM7 \
-    TefilaG0 \
-    TefilaG1 \
-    TefilaG2 \
-    TefilaG3 \
-    TefilaG4 \
-    TefilaG5 \
-    TefilaG6 \
-    TefilaG7 \
-    Chatzos1 \
-    Chatzos2 \
-    Chatzos3 \
-    Chatzos4 \
-    Chatzos5 \
-    Chatzos6 \
-    Chatzos7 \
-    GedolaG1 \
-    GedolaG2 \
-    GedolaG3 \
-    GedolaG4 \
-    GedolaG5 \
-    GedolaG6 \
-    GedolaG7 \
-    GedolaS1 \
-    GedolaS2 \
-    GedolaS3 \
-    GedolaS4 \
-    GedolaS5 \
-    GedolaS6 \
-    GedolaS7 \
-    GedolaM1 \
-    GedolaM2 \
-    GedolaM3 \
-    GedolaM4 \
-    GedolaM5 \
-    GedolaM6 \
-    GedolaM7 \
-    KetanaG1 \
-    KetanaG2 \
-    KetanaG3 \
-    KetanaG4 \
-    KetanaG5 \
-    KetanaG6 \
-    KetanaG7 \
-    KetanaM1 \
-    KetanaM2 \
-    KetanaM3 \
-    KetanaM4 \
-    KetanaM5 \
-    KetanaM6 \
-    KetanaM7 \
-    PlagG1 \
-    PlagG2 \
-    PlagG3 \
-    PlagG4 \
-    PlagG5 \
-    PlagG6 \
-    PlagG7 \
-    PlagM1 \
-    PlagM2 \
-    PlagM3 \
-    PlagM4 \
-    PlagM5 \
-    PlagM6 \
-    PlagM7 \
-    Neiros1 \
-    Neiros2 \
-    Neiros3 \
-    Neiros4 \
-    Neiros5 \
-    Neiros6 \
-    Neiros7 \
-    Shekia1 \
-    Shekia2 \
-    Shekia3 \
-    Shekia4 \
-    Shekia5 \
-    Shekia6 \
-    Shekia7 \
-    TzeisD1 \
-    TzeisD2 \
-    TzeisD3 \
-    TzeisD4 \
-    TzeisD5 \
-    TzeisD6 \
-    TzeisD7 \
-    Tzeis1 \
-    Tzeis2 \
-    Tzeis3 \
-    Tzeis4 \
-    Tzeis5 \
-    Tzeis6 \
-    Tzeis7 \
-    Tam1 \
-    Tam2 \
-    Tam3 \
-    Tam4 \
-    Tam5 \
-    Tam6 \
-    Tam7 \
-    TamD1 \
-    TamD2 \
-    TamD3 \
-    TamD4 \
-    TamD5 \
-    TamD6 \
-    TamD7 \
-    Community \
-    Coords \
-]
+    lappend header Sunday Saturday
+
+    foreach col $columns {
+	set start 1
+	if {$col in $zerolist} {
+	    set start 0
+	}
+
+	for {set dow $start} {$dow <= 7} {incr dow} {
+	    lappend header ${col}${dow}
+	}
+    }
+
+    lappend header Community Coords
+    return $header
+}
+
+### MAIN ###
+
+Init
 
 set zmanNameList [list \
     ShaahZmanisGRA \
@@ -273,6 +100,7 @@ set zmanNameList [list \
     SofZmanTefilahGRA \
     Chatzos \
     MinchahGedolahGRA \
+    MinchahGedolahS \
     MinchahGedolahMA72 \
     MinchahKetanahGRA \
     MinchahKetanahMA72 \
@@ -291,6 +119,8 @@ set zmanNameList [list \
 set beg "09/05/2010"
 set end "10/22/2011"
 
+# List of extra Neiros dates
+# for Erev Yom Tov
 set neiroslist [list]
 set neirosdates [list \
     09/08/2010 \
@@ -338,13 +168,21 @@ set loc [Location create %AUTO% \
 set day [Date create %AUTO% [clock scan $beg -format "%m/%d/%Y"]]
 set cal [Calendar create %AUTO% -date $day -location $loc]
 
-puts stdout [csv::join $header]
+puts stdout [csv::join [Header]]
 flush stdout
 
 while {[$day timeval] <= [clock scan $end -format "%m/%d/%Y"]} {
     set week [list]
+
+    # :TODO: Add Parsha
+
+    # English dates
     lappend week [string map {" " ""} [$day format "%N/%e/%Y"]]
-    lappend week [string map {" " ""} [clock format [clock add [$day timeval] 6 days] -format "%N/%e/%Y"]]
+    lappend week [string map {" " ""} [clock format [$day add 6 days] -format "%N/%e/%Y"]]
+
+    # :TODO: Add Hebrew dates
+
+    # :TODO: Add Daf Yomi
 
     foreach zmanName $zmanNameList {
 	set zmanlist [list]
@@ -353,11 +191,13 @@ while {[$day timeval] <= [clock scan $end -format "%m/%d/%Y"]} {
 	    ;# Only generate Neiros for Friday and Erev Yom Tov
 	    if {$zmanName eq "Neiros18" && $dow != 6 && [$day timeval] ni $neiroslist} {
 		lappend zmanlist {}
+	    } elseif {$zmanName eq "MinchahGedolahS"} {
+		lappend zmanlist [$cal zman MinchahGedolahGRA strict]
 	    } else {
 		lappend zmanlist [$cal zman $zmanName]
 	    }
 
-	    $day add 1 days
+	    $day incr 1 days
 	}
 
 	;# Calculate minimum for SofZman*
@@ -366,17 +206,8 @@ while {[$day timeval] <= [clock scan $end -format "%m/%d/%Y"]} {
 	    set zmanlist [concat $min $zmanlist]
 	}
 
-	;# Add MinchahGedolahGRA lechumrah
-	if {$zmanName eq "MinchahGedolahGRA"} {
-	    $day add -7 days
-	    for {set dow 1} {$dow <= 7} {incr dow} {
-		lappend zmanlist [$cal zman $zmanName strict]
-		$day add 1 days
-	    }
-	}
-
 	lappend week {*}$zmanlist
-	$day add -7 days
+	$day incr -7 days
     }
 
     lappend week [$loc cget -name]
@@ -385,6 +216,8 @@ while {[$day timeval] <= [clock scan $end -format "%m/%d/%Y"]} {
     puts stdout [csv::join $week]
     flush stdout
 
-    $day add 7 days
+    $day incr 7 days
 }
+
+exit 0
 
