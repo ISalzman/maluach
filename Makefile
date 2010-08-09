@@ -11,12 +11,17 @@ APPVDIR = $(VFSLIB)/app-$(APPNAME)
 VFSOBJS = $(addprefix $(VFSDIR)/,$(VFSSRCS))
 APPOBJS = $(addprefix $(APPVDIR)/,$(APPSRCS))
 
-EXTRA_CLEAN_FILES = $(APPNAME).exe $(APPNAME).kit $(APPNAME).bat
-EXTRA_NAGELFAR_FILES := Astro/Astro.tcl
+EXTRA_CLEAN_FILES := $(APPNAME).exe $(APPNAME).kit $(APPNAME).bat runtime
+EXTRA_NAGELFAR_FILES := Astro/Astro.tcl DafYomi/DafYomi.tcl Zmanim/Zmanim.tcl
 
 APPLIBS := Astro DafYomi Zmanim
-EXTLIBS := snit
-PACKAGES := $(APPLIBS) $(EXTLIBS)
+EXTLIBS := $(TOPDIR)/snit $(TOPDIR)/csv
+TZDATA := /c/programs/tcl/lib/tcl8.5/tzdata
+TZVDIR = $(VFSLIB)/$(notdir $(patsubst %/,%,$(dir $(TZDATA))))/$(notdir $(TZDATA))
+PACKAGES := $(APPLIBS) $(EXTLIBS) $(TZDATA)
+
+RUNTIME = $(TCLKITSH)
+#RUNTIME = $(TCLKIT)
 
 include $(TOPDIR)/common.mk
 
@@ -29,7 +34,9 @@ $(APPNAME).kit: $(VFSOBJS) $(APPOBJS) $(PACKAGES)
 	-@$(RM) $(APPNAME).bat
 
 $(APPNAME).exe: $(VFSOBJS) $(APPOBJS) $(PACKAGES)
-	$(SDX) wrap $@ -vfs $(VFSDIR) -runtime $(TCLKIT)
+	@$(CP) $(RUNTIME) runtime
+	$(SDX) wrap $@ -vfs $(VFSDIR) -runtime runtime
+	-@$(RM) runtime
 
 $(APPVDIR): $(VFSLIB)
 	$(MKDIR) $@
@@ -44,11 +51,18 @@ $(APPLIBS): $(VFSLIB)
 	@$(MAKE) -C $@
 
 $(EXTLIBS): $(VFSLIB)
-	$(MKDIR) $(VFSLIB)/$@
-	$(CP) $(@)/* $(VFSLIB)/$@
+	$(MKDIR) $(VFSLIB)/$(notdir $@)
+	$(CP) -r $@/* $(VFSLIB)/$(notdir $@)
+
+$(TZDATA): $(VFSLIB)
+	$(MKDIR) $(dir $(TZVDIR))
+	$(MKDIR) $(TZVDIR)
+	$(CP) -r $@/* $(TZVDIR)
 
 vfsclean:
-	-$(RM) -r $(addprefix $(VFSLIB)/,$(EXTLIBS))
+	-$(RM) -r $(TZVDIR)
+	-$(RMDIR) $(dir $(TZVDIR))
+	-$(RM) -r $(addprefix $(VFSLIB)/,$(notdir $(EXTLIBS)))
 	-$(RM) $(VFSOBJS) $(APPOBJS)
 	-$(RMDIR) $(APPVDIR)
 	-$(RMDIR) $(VFSLIB)
