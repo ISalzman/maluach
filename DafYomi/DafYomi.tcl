@@ -4,7 +4,7 @@ package require msgcat
 package provide DafYomi 1.0
 
 namespace eval ::DafYomi {
-    variable library [file normalize [file dirname [info script]]]
+    variable library [file dirname [file normalize [info script]]]
 
     proc Init {{locale ""}} {
 	variable dafyomi
@@ -116,14 +116,14 @@ namespace eval ::DafYomi {
 
 	if {$locale eq ""} {
 	    set locale [msgcat::mclocale]
-	}
+	} else {
+	    if {$locale eq "-"} {
+		set locale $dafyomi(_locale)
+	    }
 
-	if {$locale eq "-"} {
-	    set locale $dafyomi(_locale)
+	    msgcat::mclocale $locale
+	    msgcat::mcload [file join $library msgs]
 	}
-
-	msgcat::mclocale $locale
-	msgcat::mcload [file join $library msgs]
 
 	return $locale
     }
