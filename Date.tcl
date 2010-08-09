@@ -32,11 +32,15 @@ snit::type Date {
 	return $timeval
     }
 
-    method add {amount unit} {
+    method incr {amount unit} {
 	set timeval [clock add $timeval $amount $unit]
 	$self SetOptions
 
 	return
+    }
+
+    method add {amount unit} {
+	return [clock add $timeval $amount $unit]
     }
 
     method format {{fmt "%D"}} {
