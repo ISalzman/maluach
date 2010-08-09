@@ -2,25 +2,39 @@
 
 package require Tcl 8.5
 
-set topdir [file dirname [file dirname [file normalize [info script]]]]
-lappend ::auto_path $topdir
+proc Init {} {
+    set topdir [file dirname [file dirname [file normalize [info script]]]]
+    lappend ::auto_path $topdir
 
-package require csv
-package require DafYomi
-DafYomi::Init he
+    package require csv
+    package require snit
+    package require DafYomi
 
-set header [list \
-    Sunday \
-    Saturday \
-    Daf0 \
-    Daf1 \
-    Daf2 \
-    Daf3 \
-    Daf4 \
-    Daf5 \
-    Daf6 \
-    Daf7 \
-]
+    source [file join $topdir Date.tcl]
+    source [file join $topdir Location.tcl]
+    source [file join $topdir Calendar.tcl]
+
+    DafYomi::Init
+    DafYomi::SetLocale he
+
+    return
+}
+
+proc Header {} {
+    set header [list]
+
+    lappend header Sunday Saturday
+
+    for {set dow 0} {$dow <= 7} {incr dow} {
+	lappend header Daf${dow}
+    }
+
+    return $header
+}
+
+### MAIN ###
+
+Init
 
 set beg "09/05/2010"
 set end "10/22/2011"
@@ -32,35 +46,37 @@ if {[clock format [clock scan $end -format "%m/%d/%Y"] -format "%w"] != 6} {
         return -code error "Start date must be a Saturday."
 }
 
-set daflist [list]
-set maslist [list]
-set day [clock scan $beg -format %D]
+set day [Date create %AUTO% [clock scan $beg -format "%m/%d/%Y"]]
+set cal [Calendar create %AUTO% -date $day]
 
-puts stdout [csv::join $header]
+puts stdout [csv::join [Header]]
 flush stdout
 
-while {$day <= [clock scan $end -format %D]} {
-    set yomi [DafYomi::Daf {*}[clock format $day -format "%Y %N %e"]]
-    set daf [lindex [split $yomi] end]
-    set mas [lrange [split $yomi] 0 end-1]
+while {[$day timeval] <= [clock scan $end -format "%m/%d/%Y"]} {
+    set week [list]
+    set daflist [list]
+    set maslist [list]
 
-    lappend daflist $daf
-    if {$mas ni $maslist} {
-	lappend maslist $mas
+    lappend week [string map {" " ""} [$day format "%N/%e/%Y"]]
+    lappend week [string map {" " ""} [clock format [$day add 6 days] -format "%N/%e/%Y"]]
+
+    for {set dow 1} {$dow <= 7} {incr dow} {
+	set yomi [$cal dafyomi]
+	set daf [lindex [split $yomi] end]
+	set mas [lrange [split $yomi] 0 end-1]
+
+	lappend daflist $daf
+	if {$mas ni $maslist} {
+	    lappend maslist $mas
+	}
+
+	$day incr 1 days
     }
 
-    if {[clock format $day -format "%a"] eq "Sat"} {
-	set datelist [list [string map {" " ""} [clock format [clock add $day -6 days] -format "%N/%e/%Y"]]]
-	lappend datelist [string map {" " ""} [clock format $day -format "%N/%e/%Y"]]
+    lappend week [join $maslist -] {*}$daflist
 
-	puts stdout [csv::join [list {*}$datelist [join $maslist -] {*}$daflist]]
-	flush stdout
-
-	set maslist [list]
-	set daflist [list]
-    }
-
-    set day [clock add $day 1 days]
+    puts stdout [csv::join $week]
+    flush stdout
 }
 
 exit 0
