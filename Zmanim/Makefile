@@ -8,6 +8,8 @@ LIBSRCS := $(LIBMAIN) pkgIndex.tcl
 LIBVDIR = $(VFSLIB)/$(LIBNAME)
 LIBOBJS = $(addprefix $(LIBVDIR)/,$(LIBSRCS))
 
+EXTRA_NAGELFAR_FILES := $(TOPDIR)/Astro/Astro.tcl
+
 include $(TOPDIR)/common.mk
 
 ifneq ($(MAKELEVEL),0)
