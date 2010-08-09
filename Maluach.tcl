@@ -1,18 +1,20 @@
+
+package require snit
+package require Astro
+package require Zmanim
+package require DafYomi
+
 package provide app-maluach 1.0
 
 namespace eval ::Maluach {
+    variable library [file dirname [file normalize [info script]]]
 
     proc Init {} {
-	set appdir [file normalize [file dirname [info script]]]
+	variable library
 
-	package require snit
-	package require Astro
-	package require Zmanim
-	package require DafYomi
-
-	source [file join $appdir Date.tcl]
-	source [file join $appdir Location.tcl]
-	source [file join $appdir Calendar.tcl]
+	source [file join $library Date.tcl]
+	source [file join $library Location.tcl]
+	source [file join $library Calendar.tcl]
 
 	Astro::Init
 	Zmanim::Init
@@ -23,6 +25,11 @@ namespace eval ::Maluach {
 
 	return
     }
+
+    proc Main {} {
+	Init
+
+	return
+    }
 }
 
-::Maluach::Init
