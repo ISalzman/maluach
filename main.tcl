@@ -7,7 +7,7 @@ switch -exact -- [starkit::startup] {
     sourced {return}
 
     unwrapped {
-	starkit::autoextend [file normalize [file dirname [info script]]]
+	starkit::autoextend [file dirname [file normalize [info script]]]
     }
 
     starkit -
@@ -17,3 +17,7 @@ switch -exact -- [starkit::startup] {
 }
 
 package require app-maluach
+
+::Maluach::Main
+
+exit 0
