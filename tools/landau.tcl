@@ -141,7 +141,7 @@ if {[clock format [clock scan $beg -format "%m/%d/%Y"] -format "%w"] != 0} {
     return -code error "Start date must be a Sunday."
 }
 if {[clock format [clock scan $end -format "%m/%d/%Y"] -format "%w"] != 6} {
-    return -code error "Start date must be a Saturday."
+    return -code error "End date must be a Saturday."
 }
 
 set loc [Location create %AUTO% \
