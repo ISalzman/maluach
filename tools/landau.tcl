@@ -146,22 +146,43 @@ if {[clock format [clock scan $end -format "%m/%d/%Y"] -format "%w"] != 6} {
 
 set loc [Location create %AUTO% \
     -name "La Brea / Beverly" \
-    -longitude "118 20 39 W" \
     -latitude "34 4 34 N" \
+    -longitude "118 20 39 W" \
     -timezone "America/Los_Angeles" \
 ]
 
 #set loc [Location create %AUTO% \
     -name "Pico / Robertson" \
-    -longitude "118 23 1 W" \
     -latitude "34 3 17 N" \
+    -longitude "118 23 1 W" \
     -timezone "America/Los_Angeles" \
 ]
 
 #set loc [Location create %AUTO% \
     -name "City of Hope" \
-    -longitude "117 58 15 W" \
     -latitude "34 7 46 N" \
+    -longitude "117 58 15 W" \
+    -timezone "America/Los_Angeles" \
+]
+
+#set loc [Location create %AUTO% \
+    -name "Valley Village" \
+    -latitude "34 9 54 N" \
+    -longitude "118 23 47 W" \
+    -timezone "America/Los_Angeles" \
+]
+
+#set loc [Location create %AUTO% \
+    -name "Taft Correctional Institution" \
+    -latitude "35 6 42 N" \
+    -longitude "119 23 8 W" \
+    -timezone "America/Los_Angeles" \
+]
+
+#set loc [Location create %AUTO% \
+    -name "Manning Beef" \
+    -latitude "34 0 19 N" \
+    -longitude "118 4 18 W" \
     -timezone "America/Los_Angeles" \
 ]
 
