@@ -96,7 +96,7 @@ namespace eval ::DafYomi {
 
 	set daf [expr {$daf / 86400}]
 	dict for {maseches pages} $dafyomi(shas) {
-	    foreach {first last} $pages {break;}
+	    lassign $pages first last
 	    set dapim [expr {$last - $first + 1}]
 
 	    if {$daf < $dapim} {

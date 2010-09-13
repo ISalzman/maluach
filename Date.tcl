@@ -48,7 +48,7 @@ snit::type Date {
     }
 
     method SetOptions {} {
-	foreach {year month day} [split [clock format $timeval -format "%Y/%m/%d"] /] {break;}
+	lassign [split [clock format $timeval -format "%Y/%m/%d"] /] year month day
 	foreach opt {year month day} {
 	    set options(-$opt) [scan [set $opt] "%d"]
 	}

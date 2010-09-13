@@ -46,7 +46,7 @@ snit::type Location {
     }
 
     method getLongitudeDMS {} {
-	foreach {d m s} [$type deg2dms $options(-longitude)] {break;}
+	lassign [$type deg2dms $options(-longitude)] d m s
 
 	if {$options(-longitude) < 0} {
 	    set dir E
@@ -58,7 +58,7 @@ snit::type Location {
     }
 
     method getLatitudeDMS {} {
-	foreach {d m s} [$type deg2dms $options(-latitude)] {break;}
+	lassign [$type deg2dms $options(-latitude)] d m s
 
 	if {$options(-latitude) < 0} {
 	    set dir S
@@ -71,7 +71,7 @@ snit::type Location {
 
     method SetLatitude {option value} {
 	if {[llength $value] > 1} {
-	    foreach {deg min sec dir} $value {break;}
+	    lassign $value deg min sec dir
 	    set value [$type dms2deg {*}[scan "$deg $min $sec" "%d %d %d"]]
 
 	    if {$value > 90 || $value < 0} {
@@ -95,7 +95,7 @@ snit::type Location {
 
     method SetLongitude {option value} {
 	if {[llength $value] > 1} {
-	    foreach {deg min sec dir} $value {break;}
+	    lassign $value deg min sec dir
 	    set value [$type dms2deg {*}[scan "$deg $min $sec" "%d %d %d"]]
 
 	    if {$value > 180 || $value < 0} {
