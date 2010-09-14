@@ -166,6 +166,7 @@ div.section {
     font-weight: bold;
     background-color: #558195;
     color: white;
+    white-space: nowrap;
 }
 
 /* The "Date" that occurs on the left hand side of timelines */
@@ -227,9 +228,9 @@ REPLACE INTO config VALUES('header','<html>
 <head>
 <title>$<project_name>: $<title></title>
 <link rel="alternate" type="application/rss+xml" title="RSS Feed"
-      href="$baseurl/timeline.rss">
+      href="$baseurl/timeline.rss" />
 <link rel="stylesheet" href="$baseurl/style.css" type="text/css"
-      media="screen">
+      media="screen" />
 </head>
 <body>
 <div class="header">
