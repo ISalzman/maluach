@@ -5,6 +5,7 @@ REPLACE INTO config VALUES('css','/* General settings for the entire page */
 html {
     min-height: 100%;
 }
+
 body {
     margin: 0ex 1ex;
     padding: 0px;
@@ -39,6 +40,7 @@ li {
     margin-bottom: 0.5em;
     margin-right: 20px;
 }
+
 /* The project logo in the upper left-hand corner of each page */
 div.logo {
     display:none;
@@ -97,6 +99,15 @@ div.mainmenu {
     -moz-box-shadow: 0px 3px 4px #333333;
     box-shadow: 0px 3px 4px #333333;
 }
+div.mainmenu a, div.mainmenu a:visited {
+    padding: 3px 10px 3px 10px;
+    color: white;
+    text-decoration: none;
+}
+div.mainmenu a:hover, div.submenu a:hover {
+    color: #000;
+    background-color: white;
+}
 
 /* The submenu bar that *sometimes* appears below the main menu */
 div.submenu {
@@ -110,11 +121,6 @@ div.submenu {
     -webkit-box-shadow: 0px 3px 4px #999;
     -moz-box-shadow: 0px 3px 4px #999;
     box-shadow: 0px 3px 4px #999;
-}
-div.mainmenu a, div.mainmenu a:visited {
-    padding: 3px 10px 3px 10px;
-    color: white;
-    text-decoration: none;
 }
 div.submenu a, div.submenu a:visited {
     padding: 2px 8px;
@@ -130,13 +136,6 @@ div.submenu a, div.submenu a:visited {
     background-color: #e0e0e0 ;
     text-shadow: 0px -1px 0px #eee;
     filter: dropshadow(color=#eeeeee, offx=0, offy=-1);
-    
-    
-}
-
-div.mainmenu a:hover, div.submenu a:hover {
-    color: #000;
-    background-color: white;
 }
 
 /* All page content from the bottom of the menu or submenu down to
@@ -156,7 +155,6 @@ div.content {
     min-height:40%;
 }
 
-
 /* Some pages have section dividers */
 div.section {
     margin-bottom: 0px;
@@ -171,7 +169,7 @@ div.section {
 
 /* The "Date" that occurs on the left hand side of timelines */
 div.divider {
-    font-size: 1.2em; 
+    font-size: 1.2em;
     font-family: Georgia, serif;
     font-weight: bold;
     margin-top: 1em;
@@ -203,7 +201,6 @@ table.label-value th {
     text-align: right;
     padding: 0.2ex 2ex;
 }
-
 
 table.report {
     border-collapse:collapse;
