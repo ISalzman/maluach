@@ -1,26 +1,18 @@
 #!/bin/env tclsh
 
+set topdir [file dirname [file dirname [file normalize [info script]]]]
+lappend ::auto_path $topdir
+
 package require Tcl 8.5
+package require csv
+package require snit
+package require dafyomi
 
-proc Init {} {
-    set topdir [file dirname [file dirname [file normalize [info script]]]]
-    lappend ::auto_path $topdir
+source [file join $topdir Date.tcl]
+source [file join $topdir Location.tcl]
+source [file join $topdir Calendar.tcl]
 
-    package require csv
-    package require snit
-    package require DafYomi
-
-    source [file join $topdir Date.tcl]
-    source [file join $topdir Location.tcl]
-    source [file join $topdir Calendar.tcl]
-
-    DafYomi::Init
-    DafYomi::SetLocale he
-
-    return
-}
-
-proc Header {} {
+proc header {} {
     set header [list]
 
     lappend header Sunday Saturday
@@ -34,7 +26,7 @@ proc Header {} {
 
 ### MAIN ###
 
-Init
+dafyomi::locale he
 
 set beg "09/05/2010"
 set end "10/22/2011"
@@ -49,7 +41,7 @@ if {[clock format [clock scan $end -format "%m/%d/%Y"] -format "%w"] != 6} {
 set day [Date create %AUTO% [clock scan $beg -format "%m/%d/%Y"]]
 set cal [Calendar create %AUTO% -date $day]
 
-puts stdout [csv::join [Header]]
+puts stdout [csv::join [header]]
 flush stdout
 
 while {[$day timeval] <= [clock scan $end -format "%m/%d/%Y"]} {

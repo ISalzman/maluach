@@ -1,32 +1,20 @@
 #!/bin/env tclsh
 
+set topdir [file dirname [file dirname [file normalize [info script]]]]
+lappend ::auto_path $topdir
+
 package require Tcl 8.5
+package require astronomica
+package require dafyomi
+package require zmanim
+package require snit
+package require csv
 
-proc Init {} {
-    set topdir [file dirname [file dirname [file normalize [info script]]]]
-    lappend ::auto_path $topdir
+source [file join $topdir date.tcl]
+source [file join $topdir location.tcl]
+source [file join $topdir calendar.tcl]
 
-    package require csv
-    package require snit
-    package require Astro
-    package require Zmanim
-    package require DafYomi
-
-    source [file join $topdir Date.tcl]
-    source [file join $topdir Location.tcl]
-    source [file join $topdir Calendar.tcl]
-
-    Astro::Init
-    Zmanim::Init
-    DafYomi::Init
-
-    #Astro::SetCalc Meeus
-    #DafYomi::SetLocale he
-
-    return
-}
-
-proc TimeCompare {time1 time2} {
+proc timeCompare {time1 time2} {
     set timeval1 [clock scan $time1 -format "%H:%M"]
     set timeval2 [clock scan $time2 -format "%H:%M"]
 
@@ -39,7 +27,7 @@ proc TimeCompare {time1 time2} {
     }
 }
 
-proc Header {} {
+proc header {} {
     set header [list]
     set zerolist [list \
 	ShemaMD ShemaM ShemaG \
@@ -80,38 +68,38 @@ proc Header {} {
 
 ### MAIN ###
 
-Init
+#dafyomi::locale he
 
 set zmanNameList [list \
-    ShaahZmanisGRA \
-    ShaahZmanisMA72 \
-    Alos16.1 \
-    Alos72 \
-    Misheyakir11.5 \
-    Misheyakir11.0 \
-    Misheyakir10.2 \
-    Misheyakir45 \
-    Hanetz \
-    SofZmanShemaMA16.1 \
-    SofZmanShemaMA72 \
-    SofZmanShemaGRA \
-    SofZmanTefilahMA16.1 \
-    SofZmanTefilahMA72 \
-    SofZmanTefilahGRA \
-    Chatzos \
-    MinchahGedolahGRA \
-    MinchahGedolahS \
-    MinchahGedolahMA72 \
-    MinchahKetanahGRA \
-    MinchahKetanahMA72 \
-    PlagHaminchahGRA \
-    PlagHaminchahMA72 \
-    Neiros18 \
-    Shekiah \
-    Tzeis8.5 \
-    Tzeis45 \
-    Tzeis72 \
-    Tzeis16.1 \
+    shaahZmanisGRA \
+    shaahZmanisMA72 \
+    alos16.1 \
+    alos72 \
+    misheyakir11.5 \
+    misheyakir11.0 \
+    misheyakir10.2 \
+    misheyakir45 \
+    hanetz \
+    sofZmanShemaMA16.1 \
+    sofZmanShemaMA72 \
+    sofZmanShemaGRA \
+    sofZmanTefilahMA16.1 \
+    sofZmanTefilahMA72 \
+    sofZmanTefilahGRA \
+    chatzos \
+    minchahGedolahGRA \
+    minchahGedolahS \
+    minchahGedolahMA72 \
+    minchahKetanahGRA \
+    minchahKetanahMA72 \
+    plagHaminchahGRA \
+    plagHaminchahMA72 \
+    neiros18 \
+    shekiah \
+    tzeis8.5 \
+    tzeis45 \
+    tzeis72 \
+    tzeis16.1 \
 ]
 
 #set beg "10/11/2009"
@@ -148,7 +136,7 @@ set loc [Location create %AUTO% \
     -name "La Brea / Beverly" \
     -latitude "34 4 34 N" \
     -longitude "118 20 39 W" \
-    -timezone "America/Los_Angeles" \
+    -timezone ":America/Los_Angeles" \
 ]
 
 #set loc [Location create %AUTO% \
@@ -186,10 +174,17 @@ set loc [Location create %AUTO% \
     -timezone "America/Los_Angeles" \
 ]
 
+#set loc [Location create %AUTO% \
+    -name "WorldMark Indio" \
+    -latitude "33 44 36 N" \
+    -longitude "116 11 13 W" \
+    -timezone ":America/Los_Angeles" \
+]
+
 set day [Date create %AUTO% [clock scan $beg -format "%m/%d/%Y"]]
 set cal [Calendar create %AUTO% -date $day -location $loc]
 
-puts stdout [csv::join [Header]]
+puts stdout [csv::join [header]]
 flush stdout
 
 while {[$day timeval] <= [clock scan $end -format "%m/%d/%Y"]} {
@@ -210,10 +205,10 @@ while {[$day timeval] <= [clock scan $end -format "%m/%d/%Y"]} {
 
 	for {set dow 1} {$dow <= 7} {incr dow} {
 	    ;# Only generate Neiros for Friday and Erev Yom Tov
-	    if {$zmanName eq "Neiros18" && $dow != 6 && [$day timeval] ni $neiroslist} {
+	    if {$zmanName eq "neiros18" && $dow != 6 && [$day timeval] ni $neiroslist} {
 		lappend zmanlist {}
-	    } elseif {$zmanName eq "MinchahGedolahS"} {
-		lappend zmanlist [$cal zman MinchahGedolahGRA strict]
+	    } elseif {$zmanName eq "minchahGedolahS"} {
+		lappend zmanlist [$cal zman minchahGedolahGRA strict]
 	    } else {
 		lappend zmanlist [$cal zman $zmanName]
 	    }
@@ -221,9 +216,9 @@ while {[$day timeval] <= [clock scan $end -format "%m/%d/%Y"]} {
 	    $day incr 1 days
 	}
 
-	;# Calculate minimum for SofZman*
-	if {[string match SofZman* $zmanName]} {
-	    set min [lindex [lsort -increasing -command TimeCompare $zmanlist] 0]
+	;# Calculate minimum for sofZman*
+	if {[string match sofZman* $zmanName]} {
+	    set min [lindex [lsort -increasing -command timeCompare $zmanlist] 0]
 	    set zmanlist [concat $min $zmanlist]
 	}
 
