@@ -1,9 +1,8 @@
 
 TOPDIR := ..
 
-LIBNAME := DafYomi
-LIBMAIN := DafYomi.tcl
-LIBSRCS := $(LIBMAIN) pkgIndex.tcl
+LIBNAME := dafyomi
+LIBSRCS := dafyomi.tcl pkgIndex.tcl
 
 MSGSDIR := msgs
 MSGSRCS := $(MSGSDIR)/he.msg
@@ -19,16 +18,16 @@ ifneq ($(MAKELEVEL),0)
     all: $(LIBOBJS) $(MSGOBJS)
 
     $(LIBVDIR): $(VFSLIB)
-	    $(MKDIR) $@
+	$(MKDIR) $@
 
     $(MSGVDIR): $(LIBVDIR)
-	    $(MKDIR) $@
+	$(MKDIR) $@
 
     $(LIBOBJS): $(LIBVDIR) $(LIBSRCS)
-	    $(CP) $(notdir $@) $(LIBVDIR)
+	$(CP) $(notdir $@) $(LIBVDIR)
 
     $(MSGOBJS): $(MSGVDIR) $(MSGSRCS)
-	    $(CP) $(MSGSDIR)/$(notdir $@) $(MSGVDIR)
+	$(CP) $(MSGSDIR)/$(notdir $@) $(MSGVDIR)
 
     vfsclean:
 	-$(RM) $(LIBOBJS)
@@ -36,4 +35,3 @@ ifneq ($(MAKELEVEL),0)
 	-$(RMDIR) $(MSGVDIR)
 	-$(RMDIR) $(LIBVDIR)
 endif
-

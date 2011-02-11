@@ -1,5 +1,5 @@
 
-namespace eval ::DafYomi {
+namespace eval ::dafyomi {
     msgcat::mcmset he {
 	"Berachos %s"		"ברכות %s"
 	"Shabbos %s"		"שבת %s"
