@@ -8,6 +8,7 @@ LIBSRCS := astronomica.tcl \
 	   deltat.tcl 	   \
 	   earth.tcl	   \
 	   elliptical.tcl  \
+	   equinox.tcl	   \
 	   fk5.tcl 	   \
 	   interpolate.tcl \
 	   jewish.tcl 	   \
@@ -15,6 +16,7 @@ LIBSRCS := astronomica.tcl \
 	   nutation.tcl    \
 	   riseset.tcl 	   \
 	   sidereal.tcl    \
+	   solstice.tcl	   \
 	   sun.tcl	   \
 	   transform.tcl   \
 	   pkgIndex.tcl
