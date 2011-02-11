@@ -1,39 +1,39 @@
 
 TOPDIR := ..
 
-LIBNAME := Astro
-LIBMAIN := Astro.tcl
-LIBSRCS := $(LIBMAIN) pkgIndex.tcl
-
-CALCSDIR := calcs
-CALCSRCS := $(CALCSDIR)/Meeus.calc $(CALCSDIR)/Schlyter.calc $(CALCSDIR)/USNO.calc $(CALCSDIR)/Zombeck.calc
+LIBNAME := astronomica
+LIBSRCS := astronomica.tcl \
+	   aberration.tcl  \
+	   date.tcl 	   \
+	   deltat.tcl 	   \
+	   earth.tcl	   \
+	   elliptical.tcl  \
+	   fk5.tcl 	   \
+	   interpolate.tcl \
+	   jewish.tcl 	   \
+	   math.tcl 	   \
+	   nutation.tcl    \
+	   riseset.tcl 	   \
+	   sidereal.tcl    \
+	   sun.tcl	   \
+	   transform.tcl   \
+	   pkgIndex.tcl
 
 LIBVDIR = $(VFSLIB)/$(LIBNAME)
-CALCVDIR = $(LIBVDIR)/$(CALCSDIR)
 LIBOBJS = $(addprefix $(LIBVDIR)/,$(LIBSRCS))
-CALCOBJS = $(addprefix $(CALCVDIR)/,$(notdir $(CALCSRCS)))
 
 include $(TOPDIR)/common.mk
 
 ifneq ($(MAKELEVEL),0)
-    all: $(LIBOBJS) $(CALCOBJS)
+    all: $(LIBOBJS)
 
     $(LIBVDIR): $(VFSLIB)
-	    $(MKDIR) $@
-
-    $(CALCVDIR): $(LIBVDIR)
-	    $(MKDIR) $@
+	$(MKDIR) $@
 
     $(LIBOBJS): $(LIBVDIR) $(LIBSRCS)
-	    $(CP) $(notdir $@) $(LIBVDIR)
-
-    $(CALCOBJS): $(CALCVDIR) $(CALCSRCS)
-	    $(CP) $(CALCSDIR)/$(notdir $@) $(CALCVDIR)
+	$(CP) $(notdir $@) $(LIBVDIR)
 
     vfsclean:
 	-$(RM) $(LIBOBJS)
-	-$(RM) $(CALCOBJS)
-	-$(RMDIR) $(CALCVDIR)
 	-$(RMDIR) $(LIBVDIR)
 endif
-

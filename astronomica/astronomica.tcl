@@ -1,126 +1,101 @@
 
-package require Tcl 8.5
-package provide Astro 1.0
+# Based on Astronomical Algorithms, Second Edition by Jean Meeus, 1998
+# Code ideas from PJ Naughter (http://www.naughter.com/aa.html)
 
-namespace eval ::Astro {
+package require Tcl 8.5
+package provide astronomica 1.0
+
+namespace eval ::astronomica {
     variable library [file dirname [file normalize [info script]]]
 
-    namespace export toRadians toDegrees normalize360 normalize180 normalize24
+    variable astro
+    set astro(degPerHour) [expr {360.0 / 24.0}]
+    set astro(refraction) [expr {34.0 / 60.0}] ;# in degrees
+    set astro(solarRadius) [expr {16.0 / 60.0}] ;# in degrees
+    set astro(lighttime) 0.0057755183 ;# days / AU
+    set astro(horizon) 0.0 ;# in degrees
+    set astro(tolerance) [expr {1 / 86400.0}] ;# within 1 second
 
-    proc Init {{calc ""}} {
+    set astro(typeRise) 0
+    set astro(typeSet) 1
+    set astro(typeTransit) 2
+
+
+    proc sunriseUT {year month day longitude latitude {altitude ""}} {
 	variable astro
 
-	set astro(pi) 3.1415926535897932384626433832795
-	set astro(degPerHour) [expr {360.0 / 24.0}]
-	set astro(refraction) [expr {34.0 / 60.0}] ;# in degrees
-	set astro(solarRadius) [expr {16.0 / 60.0}] ;# in degrees
-	set astro(lighttime) 0.0057755183 ;# days / AU
-	set astro(horizon) 0.0 ;# in degrees
-	set astro(tolerance) [expr {1.0 / 86400.0}] ;# within .5 seconds
-
-	set astro(typeRise) 0
-	set astro(typeSet) 1
-	set astro(typeTransit) 2
-
-	set astro(calcns) ""
-	if {$calc eq ""} {
-	    set calc "Meeus"
+	if {$altitude eq ""} {
+	    set altitude [expr {$astro(horizon) - $astro(refraction) - $astro(solarRadius)}]
 	}
 
-	return [SetCalc $calc]
+	set jd [date::jd $year $month $day]
+
+	#set d1 [sun::apparentDeclination [expr {$jd - 1}]]
+	#set d2 [sun::apparentDeclination $jd]
+	#set d3 [sun::apparentDeclination [expr {$jd + 1}]]
+	#set ra1 [sun::apparentRightAscension [expr {$jd - 1}]]
+	#set ra2 [sun::apparentRightAscension $jd]
+	#set ra3 [sun::apparentRightAscension [expr {$jd + 1}]]
+
+	set details1 [elliptical::details [expr {$jd - 1}] SUN]
+	set details2 [elliptical::details $jd SUN]
+	set details3 [elliptical::details [expr {$jd + 1}] SUN]
+
+	set d1 [dict get $details1 apparentDeclination]
+	set d2 [dict get $details2 apparentDeclination]
+	set d3 [dict get $details3 apparentDeclination]
+	set ra1 [dict get $details1 apparentRightAscension]
+	set ra2 [dict get $details2 apparentRightAscension]
+	set ra3 [dict get $details3 apparentRightAscension]
+
+	return [riseTransitSet::riseSetUT $astro(typeRise) $jd $longitude $latitude $altitude $ra1 $ra2 $ra3 $d1 $d2 $d3]
     }
 
-    proc SetCalc {{calc ""}} {
+    proc sunsetUT {year month day longitude latitude {altitude ""}} {
 	variable astro
-	variable library
 
-	if {$calc ne ""} {
-	    set calcfile [file join $library calcs ${calc}.calc]
-
-	    if {[file exists $calcfile]} {
-		uplevel #0 [list ::source $calcfile]
-		set astro(calcns) $calc
-	    }
+	if {$altitude eq ""} {
+	    set altitude [expr {$astro(horizon) - $astro(refraction) - $astro(solarRadius)}]
 	}
 
-	return $astro(calcns)
+	set jd [date::jd $year $month $day]
+
+	#set d1 [sun::apparentDeclination [expr {$jd - 1}]]
+	#set d2 [sun::apparentDeclination $jd]
+	#set d3 [sun::apparentDeclination [expr {$jd + 1}]]
+	#set ra1 [sun::apparentRightAscension [expr {$jd - 1}]]
+	#set ra2 [sun::apparentRightAscension $jd]
+	#set ra3 [sun::apparentRightAscension [expr {$jd + 1}]]
+
+	set details1 [elliptical::details [expr {$jd - 1}] SUN]
+	set details2 [elliptical::details $jd SUN]
+	set details3 [elliptical::details [expr {$jd + 1}] SUN]
+
+	set d1 [dict get $details1 apparentDeclination]
+	set d2 [dict get $details2 apparentDeclination]
+	set d3 [dict get $details3 apparentDeclination]
+	set ra1 [dict get $details1 apparentRightAscension]
+	set ra2 [dict get $details2 apparentRightAscension]
+	set ra3 [dict get $details3 apparentRightAscension]
+
+	return [riseTransitSet::riseSetUT $astro(typeSet) $jd $longitude $latitude $altitude $ra1 $ra2 $ra3 $d1 $d2 $d3]
     }
 
-    proc CalcList {} {
-	variable astro
-	variable library
+    proc suntransitUT {year month day longitude} {
+	set jd [date::jd $year $month $day]
 
-	set calclist [list]
-	set calcdir [file join $library calcs]
-	set filelist [glob -nocomplain -tails -directory $calcdir *.calc]
+	#set ra1 [sun::apparentRightAscension [expr {$jd - 1}]]
+	#set ra2 [sun::apparentRightAscension $jd]
+	#set ra3 [sun::apparentRightAscension [expr {$jd + 1}]]
 
-	foreach file $filelist {
-	    lappend calclist [file rootname $file]
-	}
+	set details1 [elliptical::details [expr {$jd - 1}] SUN]
+	set details2 [elliptical::details $jd SUN]
+	set details3 [elliptical::details [expr {$jd + 1}] SUN]
 
-	return [lsort $calclist]
-    }
+	set ra1 [dict get $details1 apparentRightAscension]
+	set ra2 [dict get $details2 apparentRightAscension]
+	set ra3 [dict get $details3 apparentRightAscension]
 
-    proc SunRiseUT {args} {
-	variable astro
-	return [$astro(calcns)::SunRiseUT {*}$args]
-    }
-
-    proc SunSetUT {args} {
-	variable astro
-	return [$astro(calcns)::SunSetUT {*}$args]
-    }
-
-    proc SunTransitUT {args} {
-	variable astro
-	return [$astro(calcns)::SunTransitUT {*}$args]
-    }
-
-    # Convert degrees to radians
-    proc toRadians {D} {
-	variable astro
-
-	set R [expr {$D * $astro(pi) / 180.0}]
-	return $R
-    }
-
-    # Convert radians to degrees
-    proc toDegrees {R} {
-	variable astro
-
-	set D [expr {$R * 180.0 / $astro(pi)}]
-	return $D
-    }
-
-    # Normalize angle into range 0 <= a < 360
-    proc normalize360 {a} {
-	set w [expr {fmod($a, 360.0)}]
-	if {$w < 0.0} {
-	    set w [expr {$w + 360.0}]
-	}
-
-	return $w
-    }
-
-    # Normalize angle into range -180 <= a < 180
-    proc normalize180 {a} {
-	set w [expr {fmod($a, 360.0)}]
-	if {abs($w) >= 180.0} {
-	    set fix [expr {$a < 0.0 ? 360.0 : -360.0}]
-	    set w [expr {$w + $fix}]
-	}
-
-	return $w
-    }
-
-    # Normalize hour into range 0 <= h < 24
-    proc normalize24 {h} {
-	set w [expr {fmod($h, 24.0)}]
-	if {$w < 0.0} {
-	    set w [expr {$w + 24.0}]
-	}
-
-	return $w
+	return [riseTransitSet::transitUT $jd $longitude $ra1 $ra2 $ra3]
     }
 }
-
