@@ -16,8 +16,5 @@ switch -exact -- [starkit::startup] {
     default {}
 }
 
-package require app-maluach
-
-::Maluach::Main
-
-exit 0
+package require maluach
+::maluach::main
