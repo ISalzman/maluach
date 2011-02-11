@@ -7,10 +7,10 @@ endif
 
 # 8.5
 TCLSH := /c/programs/tcl/bin/tclsh85.exe
-#TCLKIT := /c/programs/tcl/bin/tclkit-8.5.8-win32.upx.exe
-#TCLKITSH := /c/programs/tcl/bin/tclkitsh-8.5.8-win32.upx.exe
-TCLKIT := /c/programs/tcl/bin/tclkit-gui-858.exe
-TCLKITSH := /c/programs/tcl/bin/tclkit-cli-858.exe
+#TCLKIT := /c/programs/tcl/bin/tclkit-8.5.9-win32.upx.exe
+#TCLKITSH := /c/programs/tcl/bin/tclkitsh-8.5.9-win32.upx.exe
+TCLKIT := /c/programs/tcl/bin/tclkit-gui-859.exe
+TCLKITSH := /c/programs/tcl/bin/tclkit-cli-859.exe
 #TCLKIT := /c/programs/tcl/bin/base-tk8.5-thread-win32-ix86.exe
 #TCLKITSH := /c/programs/tcl/bin/base-tcl8.5-thread-win32-ix86.exe
 
@@ -35,7 +35,7 @@ VFSLIB = $(VFSDIR)/lib
 .SUFFIXES:
 .SUFFIXES: .tcl
 
-.PHONY: all clean distclean update subdirs
+.PHONY: all clean distclean update subdirs pkgIndex header nagelfar
 
 all:
 
@@ -45,30 +45,33 @@ $(VFSDIR):
 $(VFSLIB): $(VFSDIR)
 	$(MKDIR) $@
 
+libsrcs:
+	@echo $(LIBSRCS)
+
 subdirs:
-	@for dir in $(SUBDIRS); do \
+	@for dir in $(APPLIBS); do \
 	    $(MAKE) -C $$dir $(MAKECMDGOALS); \
 	done
 
 tags: $(APPSRCS) $(LIBSRCS)
 	$(CTAGS) $(APPSRCS) $(LIBSRCS)
 
-header: $(APPSRCS) $(LIBSRCS)
-	$(NAGELFAR) -header header $(APPSRCS) $(LIBSRCS) $(EXTRA_NAGELFAR_FILES)
+nagelfar: $(APPSRCS) $(LIBSRCS)
+	$(NAGELFAR) -strictappend $(TOPDIR)/header $(filter-out %pkgIndex.tcl,$(APPSRCS) $(LIBSRCS))
 
-pkgIndex.tcl: $(APPMAIN) $(LIBMAIN)
-	echo 'pkg_mkIndex . $(APPMAIN) $(LIBMAIN)' | $(TCLSH)
+pkgIndex: $(APPSRCS) $(LIBSRCS)
+	echo 'pkg_mkIndex . $^' | $(TCLSH)
 
 tclIndex: $(APPSRCS) $(LIBSRCS)
-	echo 'auto_mkindex . $(APPSRCS) $(LIBSRCS)' | $(TCLSH)
+	echo 'auto_mkindex . $^' | $(TCLSH)
 
 clean: subdirs vfsclean
 	-$(RM) tclIndex $(EXTRA_CLEAN_FILES)
 
 distclean: clean
-	-$(RM) tags header pkgIndex.tcl
+	-$(RM) tags header
 
-update: subdirs tags header pkgIndex.tcl
+update: subdirs tags header
 
 vfsclean:
 
