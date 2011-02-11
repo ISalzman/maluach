@@ -1,28 +1,24 @@
 
 TOPDIR := ..
 
-LIBNAME := Zmanim
-LIBMAIN := Zmanim.tcl
-LIBSRCS := $(LIBMAIN) pkgIndex.tcl
+LIBNAME := zmanim
+LIBSRCS := zmanim.tcl pkgIndex.tcl
 
 LIBVDIR = $(VFSLIB)/$(LIBNAME)
 LIBOBJS = $(addprefix $(LIBVDIR)/,$(LIBSRCS))
 
-EXTRA_NAGELFAR_FILES := $(TOPDIR)/Astro/Astro.tcl
-
 include $(TOPDIR)/common.mk
 
 ifneq ($(MAKELEVEL),0)
-    all: $(LIBOBJS) $(MSGOBJS)
+    all: $(LIBOBJS)
 
     $(LIBVDIR): $(VFSLIB)
-	    $(MKDIR) $@
+	$(MKDIR) $@
 
     $(LIBOBJS): $(LIBVDIR) $(LIBSRCS)
-	    $(CP) $(notdir $@) $(LIBVDIR)
+	$(CP) $(notdir $@) $(LIBVDIR)
 
     vfsclean:
 	-$(RM) $(LIBOBJS)
 	-$(RMDIR) $(LIBVDIR)
 endif
-
