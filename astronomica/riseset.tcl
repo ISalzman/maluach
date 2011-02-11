@@ -123,8 +123,8 @@ namespace eval ::astronomica::riseTransitSet {
 	    set th [expr {$theta0 * $astro(degPerHour) + 360.985647 * $m}]
 	    set H [expr {$th - $longitude - $ra}]
 	    set h [transform::equitorial2altitude $H $d $latitude]
-	    set dm [expr {($h - $altitude) / 360 * cos([math::toRadians $d])
-			* cos([math::toRadians $latitude]) * sin([math::toRadians $H])}]
+	    set dm [expr {($h - $altitude) / (360 * cos([math::toRadians $d])
+			* cos([math::toRadians $latitude]) * sin([math::toRadians $H]))}]
 
 	    if {abs($dm) < $astro(tolerance)} {
 		break
