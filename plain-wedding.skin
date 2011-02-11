@@ -220,6 +220,32 @@ table.report tr td {
 textarea {
     font-size: 1em;
 }
+
+pre.diff {
+    color: #000;
+}
+
+pre .diff-position {
+    display:-moz-inline-stack;
+    display:inline-block;
+    zoom:1;
+    *display:block;
+    width: 100%;
+    font-style: italic;
+    padding: 0.5em 0;
+    margin: 0.5em 0;
+    border-top: 1px dotted #A2B5CD;
+    border-bottom: 1px dotted #A2B5CD;
+    color: #A2B5CD;
+}
+
+pre .diff-added {
+    background-color: #CEFBC3 !important;
+}
+
+pre .diff-removed {
+    background-color: #F5C2C1 !important;
+}
 ');
 REPLACE INTO config VALUES('header','<html>
 <head>
@@ -275,5 +301,35 @@ if {[info exists login]} {
 REPLACE INTO config VALUES('footer','<div class="footer">
 Fossil version $manifest_version $manifest_date
 </div>
+<script>
+/*  Simple diff highlighting */
+var DiffHighlighter = {
+  isDiff : function(s){
+    return (s.match(/^@@.*@@/m) && s.match(/^[+-]/m));
+  },
+
+  highlightElement : function(el){
+    var s = el.innerHTML;
+    if (!this.isDiff(s)){
+      return;
+    }
+    s = s.replace("<", "&lt;");
+    s = s.replace(/^\+.*$/mg, ''<span class="diff-added">$&</span>'');
+    s = s.replace(/^\-.*$/mg, ''<span class="diff-removed">$&</span>'');
+    s = s.replace(/^@@.*$/mg, ''<span class="diff-position">$&</span>'');
+    s = "<pre class=''diff''>" + s + "</pre>"; // workaround for IE
+    el.innerHTML = s;
+  },
+
+  highlightElementsWithTagName : function(tagName){
+    var els = document.getElementsByTagName(tagName);
+    for (var i=0; i < els.length; i++){
+      this.highlightElement(els[i]);
+    }
+  }
+};
+DiffHighlighter.highlightElementsWithTagName(''pre'');
+</script>
 </body></html>
 ');
+REPLACE INTO config VALUES('index-page','/doc/tip/wiki/index.wiki');
