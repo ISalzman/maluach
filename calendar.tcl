@@ -3,44 +3,36 @@ snit::type Calendar {
     option -date -configuremethod SetOption
     option -location -configuremethod SetOption
 
-    variable internalDate 0
-    variable internalLocation 0
+    variable internal -array {-date 0 -location 0}
 
     constructor {args} {
 	$self configurelist $args
 
 	if {$options(-date) eq ""} {
 	    $self configure -date [Date create %AUTO%]
-	    set internalDate 1
+	    set internal(-date) 1
 	}
 	if {$options(-location) eq ""} {
 	    $self configure -location [Location create %AUTO%]
-	    set internalLocation 1
+	    set internal(-location) 1
 	}
 
 	return
     }
 
     destructor {
-	if {$internalDate} {
+	if {$internal(-date)} {
 	    catch {$options(-date) destroy}
 	}
-	if {$internalLocation} {
+	if {$internal(-location)} {
 	    catch {$options(-location) destroy}
 	}
-    }
 
-    method SetOption {option value} {
-	if {[catch {$value info type} err]} {
-	    return -code error "$option must be a valid snit object."
-	}
-
-	set options($option) $value
 	return
     }
 
     method zman {zmanName args} {
-	if {[info proc ::Zmanim::$zmanName] eq ""} {
+	if {[info proc ::zmanim::$zmanName] eq ""} {
 	    return -code error "Invalid zman \"$zmanName\"."
 	}
 
@@ -52,12 +44,12 @@ snit::type Calendar {
 	set timezone [$options(-location) cget -timezone]
 
 	set arglist [list $year $month $day $longitude $latitude $timezone]
-	if {$zmanName eq "MinchahGedolahGRA" && [lindex $args 0] eq "strict"} {
+	if {$zmanName eq "minchahGedolahGRA" && [lindex $args 0] eq "strict"} {
 	    lappend arglist 1
 	}
 
-	set zmanhr [::Zmanim::$zmanName {*}$arglist]
-	return [::Zmanim::Format $zmanhr $zmanName $year $month $day $timezone]
+	set zmanhr [::zmanim::$zmanName {*}$arglist]
+	return [::zmanim::format $zmanhr $zmanName $year $month $day $timezone]
     }
 
     method dafyomi {args} {
@@ -65,6 +57,20 @@ snit::type Calendar {
 	set month [$options(-date) cget -month]
 	set day [$options(-date) cget -day]
 
-	return [::DafYomi::Daf $year $month $day]
+	return [::dafyomi::daf $year $month $day]
+    }
+
+    method SetOption {option value} {
+	if {[catch {$value info type} err]} {
+	    return -code error "$option must be a valid snit object."
+	}
+
+	if {$internal($option)} {
+	    catch {$options($option) destroy}
+	    set interal($options) 0
+	}
+
+	set options($option) $value
+	return
     }
 }
