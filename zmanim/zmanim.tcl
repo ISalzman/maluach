@@ -58,12 +58,12 @@ namespace eval ::zmanim {
 
 	if {$local >= 24.0} {
 	    set sunrise [astronomica::sunriseUT $year $month [incr day -1] $longitude $latitude $altitude]
-	} elseif {$local < 0.0} {
+	} elseif {$local < 0} {
 	    set sunrise [astronomica::sunriseUT $year $month [incr day +1] $longitude $latitude $altitude]
 	}
 
 	set local [expr {$sunrise + $tzoffset}]
-	if {$local < 0.0} {
+	if {$local < 0} {
 	    set local [expr {$local + 24.0}]
 	}
 
@@ -78,12 +78,12 @@ namespace eval ::zmanim {
 
 	if {$local >= 24.0} {
 	    set sunset [astronomica::sunsetUT $year $month [incr day -1] $longitude $latitude $altitude]
-	} elseif {$local < 0.0} {
+	} elseif {$local < 0} {
 	    set sunset [astronomica::sunsetUT $year $month [incr day +1] $longitude $latitude $altitude]
 	}
 
 	set local [expr {$sunset + $tzoffset}]
-	if {$local < 0.0} {
+	if {$local < 0} {
 	    set local [expr {$local + 24.0}]
 	}
 
@@ -316,7 +316,7 @@ namespace eval ::zmanim {
 	    }
 	}
 
-	return [string trim [clock format $seconds -format $format]]
+	return [string trim [clock format $seconds -format $format -timezone $timezone]]
     }
 
     #
@@ -329,7 +329,7 @@ namespace eval ::zmanim {
     }
 
     proc TZoffset {year month day timezone} {
-	set today [clock scan "$month/$day/$year" -format "%m/%d/%Y"]
+	set today [clock scan "$month/$day/$year" -format "%m/%d/%Y" -timezone $timezone]
 	set tz [clock format $today -format "%z" -timezone $timezone]
 
 	scan $tz "%3d%2d" tzh tzm
@@ -352,7 +352,7 @@ namespace eval ::zmanim {
 	    set zman [expr {int($zman * 60)}]
 	}
 
-	set today [clock scan "$month/$day/$year" -format "%m/%d/%Y"]
+	set today [clock scan "$month/$day/$year" -format "%m/%d/%Y" -timezone $timezone]
 	set seconds [clock add $today $zman seconds -timezone $timezone]
 
 	return $seconds
