@@ -8,7 +8,7 @@ namespace eval ::astronomica::elliptical {
     #################
 
     proc details {jd object} {
-	namespace upvar [namespace parent] astro astro
+	variable [namespace parent]::astro
 
 	set lp 0
 	set bp 0

@@ -9,7 +9,7 @@ namespace eval ::astronomica::sidereal {
 
     # Formula 12.3
     proc meanGreenwichSiderealTime {jd} {
-	namespace upvar [namespace parent] astro astro
+	variable [namespace parent]::astro
 
 	;# Get jd at midnight
 	lassign [date::ymd $jd] y m d
@@ -26,7 +26,7 @@ namespace eval ::astronomica::sidereal {
 
     # Formula 12.4
     proc meanGreenwichSiderealTime-alt {jd} {
-	namespace upvar [namespace parent] astro astro
+	variable [namespace parent]::astro
 
 	set t [expr {($jd - 2451545) / 36525.0}]
 	set theta [expr {280.46061837 + 360.98564736629*($jd - 2451545) + 0.000387933*$t**2 - $t**3/38710000.0}]

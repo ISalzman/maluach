@@ -25,7 +25,7 @@ namespace eval ::astronomica::riseTransitSet {
     }
 
     proc Transit0 {jd longitude ra} {
-	namespace upvar [namespace parent] astro astro
+	variable [namespace parent]::astro
 
 	set theta0 [sidereal::apparentGreenwichSiderealTime $jd]
 	set m0 [expr {($ra + $longitude - $theta0 * $astro(degPerHour)) / 360.0}]
@@ -39,7 +39,7 @@ namespace eval ::astronomica::riseTransitSet {
     }
 
     proc transitUT {jd longitude ra1 ra2 ra3} {
-	namespace upvar [namespace parent] astro astro
+	variable [namespace parent]::astro
 
 	set dt [deltaT::deltaT $jd]
 	set m [Transit0 $jd $longitude $ra2]
@@ -76,7 +76,7 @@ namespace eval ::astronomica::riseTransitSet {
     }
 
     proc RiseSet0 {type jd longitude latitude altitude ra decl} {
-	namespace upvar [namespace parent] astro astro
+	variable [namespace parent]::astro
 
 	if {$type == $astro(typeRise)} {
 	    set sign -1
@@ -97,7 +97,7 @@ namespace eval ::astronomica::riseTransitSet {
     }
 
     proc riseSetUT {type jd longitude latitude altitude ra1 ra2 ra3 d1 d2 d3} {
-	namespace upvar [namespace parent] astro astro
+	variable [namespace parent]::astro
 
 	set dt [deltaT::deltaT $jd]
 	set m [RiseSet0 $type $jd $longitude $latitude $altitude $ra2 $d2]
