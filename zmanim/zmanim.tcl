@@ -9,6 +9,7 @@ namespace eval ::zmanim {
 
     variable zmanim
     set zmanim(seconds) no
+    set zmanim(cache) [dict create]
     set zmanim(round) [dict create	\
 	alos72			floor	\
 	alos16.1		floor	\
@@ -51,15 +52,25 @@ namespace eval ::zmanim {
     ]
 
     proc hanetz {year month day longitude latitude timezone {altitude ""}} {
-	set sunrise [astronomica::sunriseUT $year $month $day $longitude $latitude $altitude]
+	variable zmanim
 
+	set today [clock scan "$month/$day/$year" -format "%m/%d/%Y" -timezone $timezone]
 	set tzoffset [TZoffset $year $month $day $timezone]
-	set local [expr {$sunrise + $tzoffset}]
 
-	if {$local >= 24.0} {
-	    set sunrise [astronomica::sunriseUT $year $month [incr day -1] $longitude $latitude $altitude]
-	} elseif {$local < 0} {
-	    set sunrise [astronomica::sunriseUT $year $month [incr day +1] $longitude $latitude $altitude]
+	# Consult cache for pre-calcualated sunrise
+	if {[dict exists $zmanim(cache) $today $longitude $latitude $altitude sunrise]} {
+	    set sunrise [dict get $zmanim(cache) $today $longitude $latitude $altitude sunrise]
+	} else {
+	    set sunrise [astronomica::sunriseUT $year $month $day $longitude $latitude $altitude]
+	    set local [expr {$sunrise + $tzoffset}]
+
+	    if {$local >= 24.0} {
+		set sunrise [astronomica::sunriseUT $year $month [incr day -1] $longitude $latitude $altitude]
+	    } elseif {$local < 0} {
+		set sunrise [astronomica::sunriseUT $year $month [incr day +1] $longitude $latitude $altitude]
+	    }
+
+	    dict set zmanim(cache) $today $longitude $latitude $altitude sunrise $sunrise
 	}
 
 	set local [expr {$sunrise + $tzoffset}]
@@ -71,15 +82,25 @@ namespace eval ::zmanim {
     }
 
     proc shekiah {year month day longitude latitude timezone {altitude ""}} {
-	set sunset [astronomica::sunsetUT $year $month $day $longitude $latitude $altitude]
+	variable zmanim
 
+	set today [clock scan "$month/$day/$year" -format "%m/%d/%Y" -timezone $timezone]
 	set tzoffset [TZoffset $year $month $day $timezone]
-	set local [expr {$sunset + $tzoffset}]
 
-	if {$local >= 24.0} {
-	    set sunset [astronomica::sunsetUT $year $month [incr day -1] $longitude $latitude $altitude]
-	} elseif {$local < 0} {
-	    set sunset [astronomica::sunsetUT $year $month [incr day +1] $longitude $latitude $altitude]
+	# Consult cache for pre-calcualated sunset
+	if {[dict exists $zmanim(cache) $today $longitude $latitude $altitude sunset]} {
+	    set sunset [dict get $zmanim(cache) $today $longitude $latitude $altitude sunset]
+	} else {
+	    set sunset [astronomica::sunsetUT $year $month $day $longitude $latitude $altitude]
+	    set local [expr {$sunset + $tzoffset}]
+
+	    if {$local >= 24.0} {
+		set sunset [astronomica::sunsetUT $year $month [incr day -1] $longitude $latitude $altitude]
+	    } elseif {$local < 0} {
+		set sunset [astronomica::sunsetUT $year $month [incr day +1] $longitude $latitude $altitude]
+	    }
+
+	    dict set zmanim(cache) $today $longitude $latitude $altitude sunset $sunset
 	}
 
 	set local [expr {$sunset + $tzoffset}]
