@@ -66,14 +66,14 @@ namespace eval ::astronomica::date {
     }
 
     # Sunday is 0
-    proc dayOfWeek {y m d} {
+    proc weekday {y m d} {
 	set jd [jd $y $m $d]
 	set wd [expr {ifloor($jd + 1.5) % 7}]
 
 	return $wd
     }
 
-    proc dayOfYear {y m d} {
+    proc yearday {y m d} {
 	set k [expr {[isLeap $y] ? 1 : 2}]
 	set n [expr {ifloor(275 * $m / 9) - $k * ifloor(($m + 9) / 12) + $d - 30}]
 
