@@ -14,7 +14,8 @@ namespace eval ::astronomica {
     set astro(solarRadius) [expr {16.0 / 60.0}] ;# in degrees
     set astro(lighttime) 0.0057755183 ;# days / AU
     set astro(horizon) 0.0 ;# in degrees
-    set astro(tolerance) [expr {1 / 86400.0}] ;# within 1 second
+    #set astro(tolerance) [expr {1 / 86400.0}] ;# within 1 second
+    set astro(tolerance) [expr {10e-6}] ;# 0.00001 = within 0.86 of a second
 
     set astro(typeRise) 0
     set astro(typeSet) 1

@@ -8,6 +8,8 @@ namespace eval ::astronomica::equinox {
     #########################
 
     proc spring {y} {
+	variable [namespace parent]::astro
+
 	set y [expr {int($y)}]
 
 	if {$y < 1000} {
@@ -24,7 +26,7 @@ namespace eval ::astronomica::equinox {
 	    set corr [expr {58 * sin($rad)}]
 	    set jde [expr {$jde + $corr}]
 
-	    if {abs($corr) < 0.00001} {
+	    if {abs($corr) < $astro(tolerance)} {
 		break
 	    }
 	}
@@ -33,6 +35,8 @@ namespace eval ::astronomica::equinox {
     }
 
     proc autumn {y} {
+	variable [namespace parent]::astro
+
 	set y [expr {int($y)}]
 
 	if {$y < 1000} {
@@ -49,7 +53,7 @@ namespace eval ::astronomica::equinox {
 	    set corr [expr {58 * sin($rad)}]
 	    set jde [expr {$jde + $corr}]
 
-	    if {abs($corr) < 0.00001} {
+	    if {abs($corr) < $astro(tolerance)} {
 		break
 	    }
 	}
