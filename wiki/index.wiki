@@ -1,2 +1,2 @@
-<title>Maluach</title>
+<title>Home</title>
 <h1 align="center">Maluach</h1>
