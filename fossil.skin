@@ -58,22 +58,27 @@ div.header, div.mainmenu, div.submenu, div.content, div.footer {
     clear: both;
 }
 
+div.header {
+    #display: table;
+    margin-top: 20px;
+}
+
 /* The page title at the top of each page */
 div.title {
     display: table-cell;
-    padding-left: 10px;
+    padding-left: 0px;
     font-size: 2em;
     margin: 10px 0 10px -20px;
     vertical-align: bottom;
     text-align: left;
-    width: 80%;
+    width: 90%;
     font-family: Verdana, sans-serif;
     font-weight: bold;
     color: #558195;
     text-shadow: 0px 2px 2px #999999;
 }
 
-div.title a, a:visited {
+div.title a:link, div.title a:visited {
     text-decoration: none;
     color: #558195;
 }
@@ -88,10 +93,9 @@ div.status {
     white-space: nowrap;
 }
 
-div.header {
-    display: table;
-    width: 90%;
-    margin-top: 20px;
+div.status a:link, div.status a:visited {
+    text-decoration: none;
+    color: #333;
 }
 
 /* The main menu bar that appears at the top of the page beneath
@@ -131,13 +135,13 @@ div.submenu {
     box-shadow: 0px 3px 4px #999;
 }
 
-div.mainmenu a, div.mainmenu a:visited {
+div.mainmenu a:link, div.mainmenu a:visited {
     padding: 3px 10px 3px 10px;
     color: white;
     text-decoration: none;
 }
 
-div.submenu a, div.submenu a:visited {
+div.submenu a:link, div.submenu a:visited {
     padding: 2px 8px;
     color: #000;
     font-family: Arial;
@@ -228,10 +232,10 @@ div.footer {
 }
 
 /* Hyperlink colors in the footer */
-div.footer a { color: white; }
-div.footer a:link { color: white; }
-div.footer a:visited { color: white; }
-div.footer a:hover { background-color: white; color: #558195; }
+div.footer a:link, div.footer a:visited {
+    text-decoration: none;
+    color: #666;
+}
 
 /* verbatim blocks */
 pre.verbatim, blockquote pre {
@@ -311,9 +315,11 @@ REPLACE INTO config VALUES('header','<html>
   <div class="title"><a href=''$home$index_page''>$<project_name></a> | <small>$<title></small></div>
   <div class="status"><th1>
      if {[info exists login]} {
-       puts "Logged in as $login"
+       puts "Logged in as $login | "
+       html "<a href=''$home/login''>Logout</a>"
      } else {
-       puts "Not logged in"
+       puts "Not logged in | "
+       html "<a href=''$home/login''>Login</a>"
      }
   </th1></div>
 </div>
@@ -340,17 +346,12 @@ if {[hascap s]} {
 } elseif {[hascap a]} {
   html "<a href=''$home/setup_ulist''>Users</a>"
 }
-if {[info exists login]} {
-  html "<a href=''$home/login''>Logout</a>"
-} else {
-  html "<a href=''$home/login''>Login</a>"
-}
 </th1></ul></div>
 <div id="container">
 ');
 REPLACE INTO config VALUES('footer','</div>
 <div class="footer">
-Fossil version $manifest_version $manifest_date
+<a href="http://www.fossil-scm.org">Fossil</a> version $manifest_version $manifest_date
 </div>
 <script>
 /*  Simple diff highlighting */
