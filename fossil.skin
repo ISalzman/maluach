@@ -95,7 +95,8 @@ div.status {
 
 div.status a:link, div.status a:visited {
     text-decoration: none;
-    color: #333;
+    font-weight: bold;
+    color: #558195;
 }
 
 /* The main menu bar that appears at the top of the page beneath
