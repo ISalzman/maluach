@@ -9,7 +9,6 @@ namespace eval ::zmanim {
 
     variable zmanim
     set zmanim(seconds) no
-    set zmanim(cache) [dict create]
     set zmanim(round) [dict create	\
 	alos72			floor	\
 	alos16.1		floor	\
@@ -58,24 +57,24 @@ namespace eval ::zmanim {
 	set tzoffset [TZoffset $year $month $day $timezone]
 
 	# Consult cache for pre-calcualated sunrise
-	if {[dict exists $zmanim(cache) $today $longitude $latitude $altitude sunrise]} {
-	    set sunrise [dict get $zmanim(cache) $today $longitude $latitude $altitude sunrise]
+	if {[cache exists $today $longitude $latitude $altitude sunrise]} {
+	    set sunrise [cache get $today $longitude $latitude $altitude sunrise]
 	} else {
 	    set sunrise [astronomica::sunriseUT $year $month $day $longitude $latitude $altitude]
 	    set local [expr {$sunrise + $tzoffset}]
 
-	    if {$local >= 24.0} {
+	    if {$local >= 24} {
 		set sunrise [astronomica::sunriseUT $year $month [incr day -1] $longitude $latitude $altitude]
 	    } elseif {$local < 0} {
 		set sunrise [astronomica::sunriseUT $year $month [incr day +1] $longitude $latitude $altitude]
 	    }
 
-	    dict set zmanim(cache) $today $longitude $latitude $altitude sunrise $sunrise
+	    cache add $today $longitude $latitude $altitude sunrise $sunrise
 	}
 
 	set local [expr {$sunrise + $tzoffset}]
 	if {$local < 0} {
-	    set local [expr {$local + 24.0}]
+	    set local [expr {$local + 24}]
 	}
 
 	return $local
@@ -88,24 +87,24 @@ namespace eval ::zmanim {
 	set tzoffset [TZoffset $year $month $day $timezone]
 
 	# Consult cache for pre-calcualated sunset
-	if {[dict exists $zmanim(cache) $today $longitude $latitude $altitude sunset]} {
-	    set sunset [dict get $zmanim(cache) $today $longitude $latitude $altitude sunset]
+	if {[cache exists $today $longitude $latitude $altitude sunset]} {
+	    set sunset [cache get $today $longitude $latitude $altitude sunset]
 	} else {
 	    set sunset [astronomica::sunsetUT $year $month $day $longitude $latitude $altitude]
 	    set local [expr {$sunset + $tzoffset}]
 
-	    if {$local >= 24.0} {
+	    if {$local >= 24} {
 		set sunset [astronomica::sunsetUT $year $month [incr day -1] $longitude $latitude $altitude]
 	    } elseif {$local < 0} {
 		set sunset [astronomica::sunsetUT $year $month [incr day +1] $longitude $latitude $altitude]
 	    }
 
-	    dict set zmanim(cache) $today $longitude $latitude $altitude sunset $sunset
+	    cache add $today $longitude $latitude $altitude sunset $sunset
 	}
 
 	set local [expr {$sunset + $tzoffset}]
 	if {$local < 0} {
-	    set local [expr {$local + 24.0}]
+	    set local [expr {$local + 24}]
 	}
 
 	return $local
@@ -115,12 +114,12 @@ namespace eval ::zmanim {
 	set zmanis [shaahZmanisGRA $year $month $day $longitude $latitude $timezone]
 	set hanetz [hanetz $year $month $day $longitude $latitude $timezone]
 
-	return [expr {$hanetz + ($zmanis * 6.0)}]
+	return [expr {$hanetz + ($zmanis * 6)}]
     }
 
     proc alos72 {year month day longitude latitude timezone} {
 	set hanetz [hanetz $year $month $day $longitude $latitude $timezone]
-	return [expr {$hanetz - (72.0 / 60.0)}]
+	return [expr {$hanetz - (72 / 60.0)}]
     }
 
     proc alos16.1 {year month day longitude latitude timezone} {
@@ -140,7 +139,7 @@ namespace eval ::zmanim {
 
     proc misheyakir45 {year month day longitude latitude timezone} {
 	set hanetz [hanetz $year $month $day $longitude $latitude $timezone]
-	return [expr {$hanetz - (45.0 / 60.0)}]
+	return [expr {$hanetz - (45 / 60.0)}]
     }
 
     proc misheyakir10.2 {year month day longitude latitude timezone} {
@@ -160,17 +159,17 @@ namespace eval ::zmanim {
 
     proc neiros18 {year month day longitude latitude timezone} {
 	set shekiah [shekiah $year $month $day $longitude $latitude $timezone]
-	return [expr {$shekiah - (18.0 / 60.0)}]
+	return [expr {$shekiah - (18 / 60.0)}]
     }
 
     proc tzeis45 {year month day longitude latitude timezone} {
 	set shekiah [shekiah $year $month $day $longitude $latitude $timezone]
-	return [expr {$shekiah + (45.0 / 60.0)}]
+	return [expr {$shekiah + (45 / 60.0)}]
     }
 
     proc tzeis72 {year month day longitude latitude timezone} {
 	set shekiah [shekiah $year $month $day $longitude $latitude $timezone]
-	return [expr {$shekiah + (72.0 / 60.0)}]
+	return [expr {$shekiah + (72 / 60.0)}]
     }
 
     proc tzeis8.5 {year month day longitude latitude timezone} {
@@ -214,22 +213,22 @@ namespace eval ::zmanim {
 	set zmanis [shaahZmanisGRA $year $month $day $longitude $latitude $timezone]
 	set hanetz [hanetz $year $month $day $longitude $latitude $timezone]
 
-	return [expr {$hanetz + ($zmanis * 3.0)}]
+	return [expr {$hanetz + ($zmanis * 3)}]
     }
 
     proc sofZmanTefilahGRA {year month day longitude latitude timezone} {
 	set zmanis [shaahZmanisGRA $year $month $day $longitude $latitude $timezone]
 	set hanetz [hanetz $year $month $day $longitude $latitude $timezone]
 
-	return [expr {$hanetz + ($zmanis * 4.0)}]
+	return [expr {$hanetz + ($zmanis * 4)}]
     }
 
     proc minchahGedolahGRA {year month day longitude latitude timezone {strict 0}} {
 	set zmanis [shaahZmanisGRA $year $month $day $longitude $latitude $timezone]
 	set hanetz [hanetz $year $month $day $longitude $latitude $timezone]
 
-	if {$strict && $zmanis < 1.0} {
-	    return [expr {$hanetz + ($zmanis * 6.0) + 0.5}]
+	if {$strict && $zmanis < 1} {
+	    return [expr {$hanetz + ($zmanis * 6) + 0.5}]
 	}
 
 	return [expr {$hanetz + ($zmanis * 6.5)}]
@@ -267,28 +266,28 @@ namespace eval ::zmanim {
 	set zmanis [shaahZmanisMA72 $year $month $day $longitude $latitude $timezone]
 	set alos [alos72 $year $month $day $longitude $latitude $timezone]
 
-	return [expr {$alos + ($zmanis * 3.0)}]
+	return [expr {$alos + ($zmanis * 3)}]
     }
 
     proc sofZmanShemaMA16.1 {year month day longitude latitude timezone} {
 	set zmanis [shaahZmanisMA16.1 $year $month $day $longitude $latitude $timezone]
 	set alos [alos16.1 $year $month $day $longitude $latitude $timezone]
 
-	return [expr {$alos + ($zmanis * 3.0)}]
+	return [expr {$alos + ($zmanis * 3)}]
     }
 
     proc sofZmanTefilahMA72 {year month day longitude latitude timezone} {
 	set zmanis [shaahZmanisMA72 $year $month $day $longitude $latitude $timezone]
 	set alos [alos72 $year $month $day $longitude $latitude $timezone]
 
-	return [expr {$alos + ($zmanis * 4.0)}]
+	return [expr {$alos + ($zmanis * 4)}]
     }
 
     proc sofZmanTefilahMA16.1 {year month day longitude latitude timezone} {
 	set zmanis [shaahZmanisMA16.1 $year $month $day $longitude $latitude $timezone]
 	set alos [alos16.1 $year $month $day $longitude $latitude $timezone]
 
-	return [expr {$alos + ($zmanis * 4.0)}]
+	return [expr {$alos + ($zmanis * 4)}]
     }
 
     proc minchahGedolahMA72 {year month day longitude latitude timezone} {

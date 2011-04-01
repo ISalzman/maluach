@@ -2,7 +2,7 @@
 TOPDIR := ..
 
 LIBNAME := zmanim
-LIBSRCS := zmanim.tcl pkgIndex.tcl
+LIBSRCS := zmanim.tcl cache.tcl pkgIndex.tcl
 
 LIBVDIR = $(VFSLIB)/$(LIBNAME)
 LIBOBJS = $(addprefix $(LIBVDIR)/,$(LIBSRCS))
