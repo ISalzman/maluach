@@ -67,7 +67,7 @@ snit::type Calendar {
 
 	if {$internal($option)} {
 	    catch {$options($option) destroy}
-	    set interal($options) 0
+	    set internal($option) 0
 	}
 
 	set options($option) $value
