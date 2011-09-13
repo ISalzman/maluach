@@ -28,8 +28,10 @@ proc header {} {
 
 dafyomi::locale he
 
-set beg "09/05/2010"
-set end "10/22/2011"
+#set beg "09/05/2010"
+#set end "10/22/2011"
+set beg "10/16/2011"
+set end "10/13/2012"
 
 if {[clock format [clock scan $beg -format "%m/%d/%Y"] -format "%w"] != 0} {
         return -code error "Start date must be a Sunday."

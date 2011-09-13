@@ -104,22 +104,21 @@ set zmanNameList [list \
 
 #set beg "10/11/2009"
 #set end "10/02/2010"
-set beg "09/05/2010"
-set end "10/22/2011"
+#set beg "09/05/2010"
+#set end "10/22/2011"
+set beg "10/16/2011"
+set end "10/13/2012"
 
 # List of extra Neiros dates
 # for Erev Yom Tov
 set neiroslist [list]
 set neirosdates [list \
-    09/08/2010 \
-    09/22/2010 \
-    09/29/2010 \
-    04/18/2011 \
-    04/24/2011 \
-    06/07/2011 \
-    09/28/2011 \
-    10/12/2011 \
     10/19/2011 \
+    04/12/2012 \
+    09/16/2012 \
+    09/25/2012 \
+    09/30/2012 \
+    10/07/2012
 ]
 foreach neirosdate $neirosdates {
     lappend neiroslist [clock scan $neirosdate -format "%m/%d/%Y"]
@@ -133,7 +132,7 @@ if {[clock format [clock scan $end -format "%m/%d/%Y"] -format "%w"] != 6} {
 }
 
 set loc [Location create %AUTO% \
-    -name "La Brea / Beverly" \
+    -name "Beverly / La Brea" \
     -latitude "34 4 34 N" \
     -longitude "118 20 39 W" \
     -timezone ":America/Los_Angeles" \
