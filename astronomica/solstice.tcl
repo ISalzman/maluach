@@ -7,7 +7,7 @@ namespace eval ::astronomica::solstice {
     # Equinoxes and Solstices
     #########################
 
-    proc summer {y} {
+    proc june {y} {
 	variable [namespace parent]::astro
 
 	set y [expr {int($y)}]
@@ -34,7 +34,7 @@ namespace eval ::astronomica::solstice {
 	return $jde ;# in Dynamical Time
     }
 
-    proc winter {y} {
+    proc december {y} {
 	variable [namespace parent]::astro
 
 	set y [expr {int($y)}]

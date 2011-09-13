@@ -99,4 +99,43 @@ namespace eval ::astronomica {
 
 	return [riseTransitSet::transitUT $jd $longitude $ra1 $ra2 $ra3]
     }
+
+    proc marchEquinoxUT {year} {
+	set jde [equinox::march $year]
+	set dt [deltaT::deltaT $jde]
+	set jd [expr {$jde - ($dt / 86400.0)}]
+
+	return [date::ymd $jd]
+    }
+
+    proc juneSolsticeUT {year} {
+	set jde [solstice::june $year]
+	set dt [deltaT::deltaT $jde]
+	set jd [expr {$jde - ($dt / 86400.0)}]
+
+	return [date::ymd $jd]
+    }
+
+    proc septemberEquinoxUT {year} {
+	set jde [equinox::september $year]
+	set dt [deltaT::deltaT $jde]
+	set jd [expr {$jde - ($dt / 86400.0)}]
+
+	return [date::ymd $jd]
+    }
+
+    proc decemberSolsticeUT {year} {
+	set jde [solstice::december $year]
+	set dt [deltaT::deltaT $jde]
+	set jd [expr {$jde - ($dt / 86400.0)}]
+
+	return [date::ymd $jd]
+    }
+
+    interp alias {} springEquinoxUT {} marchEquinoxUT
+    interp alias {} vernalEquinoxUT {} marchEquinoxUT
+    interp alias {} summerSolsticeUT {} juneSolsticeUT
+    interp alias {} fallEquinoxUT {} septemberEquinoxUT
+    interp alias {} autumnalEquinoxUT {} septemberEquinoxUT
+    interp alias {} winterSolsticeUT {} decemberSolsticeUT
 }
