@@ -7,14 +7,20 @@ switch -exact -- [starkit::startup] {
     sourced {return}
 
     unwrapped {
-	starkit::autoextend [file dirname [file normalize [info script]]]
+	starkit::autoextend $::starkit::topdir
+        ::tcl::tm::roots [list $::starkit::topdir]
     }
 
-    starkit -
+    starkit {
+        ::tcl::tm::roots [list [file join $::starkit::topdir lib]]
+    }
+
     starpack {}
 
     default {}
 }
 
 package require maluach
-::maluach::main
+::maluach::main $::argv
+
+exit 0

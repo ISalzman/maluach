@@ -2,6 +2,7 @@
 
 set topdir [file dirname [file dirname [file normalize [info script]]]]
 lappend ::auto_path $topdir
+::tcl::tm::roots [list $topdir]
 
 package require Tcl 8.5
 package require csv
