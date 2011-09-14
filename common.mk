@@ -7,22 +7,21 @@ endif
 
 # 8.5
 TCLSH := /c/programs/tcl/bin/tclsh85.exe
-#TCLKIT := /c/programs/tcl/bin/tclkit-8.5.9-win32.upx.exe
-#TCLKITSH := /c/programs/tcl/bin/tclkitsh-8.5.9-win32.upx.exe
-TCLKIT := /c/programs/tcl/bin/tclkit-gui-859.exe
-TCLKITSH := /c/programs/tcl/bin/tclkit-cli-859.exe
+TCLKIT := /c/programs/tcl/bin/tclkit85.exe
+TCLKITSH := /c/programs/tcl/bin/tclkitsh85.exe
+#TCLKIT := /c/programs/tcl/bin/tclkit-gui.exe
+#TCLKITSH := /c/programs/tcl/bin/tclkit-cli.exe
 #TCLKIT := /c/programs/tcl/bin/base-tk8.5-thread-win32-ix86.exe
 #TCLKITSH := /c/programs/tcl/bin/base-tcl8.5-thread-win32-ix86.exe
 
 # 8.6
-#TCLKIT := /c/programs/tcl/bin/tclkit.exe
-#TCLKITSH := /c/programs/tcl/bin/tclkitsh.exe
-#TCLKIT := /c/programs/tcl/bin/tclkit-gui.exe
-#TCLKITSH := /c/programs/tcl/bin/tclkit-cli.exe
+#TCLKIT := /c/programs/tcl/bin/tclkit86.exe
+#TCLKITSH := /c/programs/tcl/bin/tclkitsh86.exe
 
 RM := rm -f
-#CP := cp -p
-CP := cp
+RMR := $(RM) -r
+CP := cp -p
+CPR := $(CP) -r
 MKDIR := mkdir -p
 RMDIR := rmdir
 CTAGS := ~/usr/bin/ctags
@@ -31,6 +30,9 @@ NAGELFAR := $(TCLKITSH) ~/bin/nagelfar.kit
 
 VFSDIR = $(TOPDIR)/$(APPNAME).vfs
 VFSLIB = $(VFSDIR)/lib
+
+NAGELFARFLAGS = -strictappend
+NAGELFARFILES = $(filter-out %pkgIndex.tcl, $(APPSRCS) $(LIBSRCS))
 
 .SUFFIXES:
 .SUFFIXES: .tcl
@@ -53,11 +55,8 @@ subdirs:
 	    $(MAKE) -C $$dir $(MAKECMDGOALS); \
 	done
 
-tags: $(APPSRCS) $(LIBSRCS)
-	$(CTAGS) $(APPSRCS) $(LIBSRCS)
-
-nagelfar: $(APPSRCS) $(LIBSRCS)
-	$(NAGELFAR) -strictappend $(TOPDIR)/header $(filter-out %pkgIndex.tcl,$(APPSRCS) $(LIBSRCS))
+nagelfar: $(NAGELFARFILES)
+	$(NAGELFAR) $(NAGELFARFLAGS) $(TOPDIR)/header $^
 
 pkgIndex: $(APPSRCS) $(LIBSRCS)
 	echo 'pkg_mkIndex . $^' | $(TCLSH)
@@ -65,13 +64,16 @@ pkgIndex: $(APPSRCS) $(LIBSRCS)
 tclIndex: $(APPSRCS) $(LIBSRCS)
 	echo 'auto_mkindex . $^' | $(TCLSH)
 
+test: tests.tcl
+	-@$(TCLSH) ./tests.tcl $(TESTFLAGS)
+
+update: tags header
+
 clean: subdirs vfsclean
-	-$(RM) tclIndex $(EXTRA_CLEAN_FILES)
+	-$(RM) tclIndex runtime $(APPNAME).bat $(APPNAME).exe $(APPNAME).kit
 
 distclean: clean
 	-$(RM) tags header
-
-update: subdirs tags header
 
 vfsclean:
 

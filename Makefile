@@ -13,10 +13,8 @@ APPVDIR = $(VFSLIB)/$(APPNAME)
 VFSOBJS = $(addprefix $(VFSDIR)/,$(VFSSRCS))
 APPOBJS = $(addprefix $(APPVDIR)/,$(APPSRCS))
 
-EXTRA_CLEAN_FILES := $(APPNAME).exe $(APPNAME).kit $(APPNAME).bat runtime
-
 APPLIBS := astronomica calendrica dafyomi zmanim
-EXTLIBS := $(TOPDIR)/snit $(TOPDIR)/csv
+EXTLIBS := $(TOPDIR)/snit $(TOPDIR)/tcl8
 
 TZDATA := /c/programs/tcl/lib/tcl8.5/tzdata
 TZVDIR = $(VFSLIB)/$(notdir $(patsubst %/,%,$(dir $(TZDATA))))/$(notdir $(TZDATA))
@@ -24,7 +22,9 @@ TZVDIR = $(VFSLIB)/$(notdir $(patsubst %/,%,$(dir $(TZDATA))))/$(notdir $(TZDATA
 ENCDATA := /c/programs/tcl/lib/tcl8.5/encoding
 ENCVDIR = $(VFSLIB)/$(notdir $(patsubst %/,%,$(dir $(ENCDATA))))/$(notdir $(ENCDATA))
 
-PACKAGES := $(APPLIBS) $(EXTLIBS) $(TZDATA)
+PACKAGES := $(APPLIBS) $(EXTLIBS)
+#PACKAGES += $(TZDATA)
+#PACKAGES += $(ENCDATA)
 
 #RUNTIME = $(TCLKITSH)
 RUNTIME = $(TCLKIT)
@@ -58,32 +58,41 @@ $(APPLIBS): $(VFSLIB)
 
 $(EXTLIBS): $(VFSLIB)
 	$(MKDIR) $(VFSLIB)/$(notdir $@)
-	$(CP) -r $@/* $(VFSLIB)/$(notdir $@)
+	$(CPR) $@/* $(VFSLIB)/$(notdir $@)
 
 $(TZDATA): $(VFSLIB)
 	$(MKDIR) $(dir $(TZVDIR))
 	$(MKDIR) $(TZVDIR)
-	$(CP) -r $@/* $(TZVDIR)
+	$(CPR) $@/* $(TZVDIR)
 
 $(ENCDATA): $(VFSLIB)
 	$(MKDIR) $(dir $(ENCVDIR))
 	$(MKDIR) $(ENCVDIR)
-	$(CP) $@/* $(ENCVDIR)
+	$(CPR) $@/* $(ENCVDIR)
 
 vfsclean:
-	-$(RM) -r $(TZVDIR)
+	-$(RMR) $(TZVDIR)
 	-$(RMDIR) $(dir $(TZVDIR))
-	-$(RM) -r $(ENCVDIR)
+	-$(RMR) $(ENCVDIR)
 	-$(RMDIR) $(dir $(ENCVDIR))
-	-$(RM) -r $(addprefix $(VFSLIB)/,$(notdir $(EXTLIBS)))
+	-$(RMR) $(addprefix $(VFSLIB)/,$(notdir $(EXTLIBS)))
 	-$(RM) $(VFSOBJS) $(APPOBJS)
 	-$(RMDIR) $(APPVDIR)
 	-$(RMDIR) $(VFSLIB)
 	-$(RMDIR) $(VFSDIR)
 
-header: $(APPSRCS) $(LIBSRCS)
-	$(NAGELFAR) -header header $(filter-out %pkgIndex.tcl, \
-	    $(APPSRCS) $(LIBSRCS) \
+header: $(APPSRCS)
+	$(NAGELFAR) -header header $(filter-out %pkgIndex.tcl, $(APPSRCS) \
 	    $(foreach dir,$(APPLIBS),$(addprefix $(dir)/,$(shell $(MAKE) -s -C $(dir) libsrcs))) \
-	    $(foreach dir,$(EXTLIBS),$(wildcard $(dir)/*.tcl)))
+	    $(foreach dir,$(EXTLIBS),\
+		$(if $(findstring tcl8,$(notdir $(dir))),\
+		$(foreach sub,$(wildcard $(dir)/*),$(wildcard $(sub)/*.tm)),\
+		$(wildcard $(dir)/*.tcl))))
 
+tags: $(APPSRCS)
+	$(CTAGS) --langmap=tcl:+.tm $(filter-out %pkgIndex.tcl, $(APPSRCS) \
+	    $(foreach dir,$(APPLIBS),$(addprefix $(dir)/,$(shell $(MAKE) -s -C $(dir) libsrcs))) \
+	    $(foreach dir,$(EXTLIBS),\
+		$(if $(findstring tcl8,$(notdir $(dir))),\
+		$(foreach sub,$(wildcard $(dir)/*),$(wildcard $(sub)/*.tm)),\
+		$(wildcard $(dir)/*.tcl))))
