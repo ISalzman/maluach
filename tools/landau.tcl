@@ -107,13 +107,15 @@ set zmanNameList [list \
 #set end "10/02/2010"
 #set beg "09/05/2010"
 #set end "10/22/2011"
-set beg "10/16/2011"
+set beg "09/25/2011"
 set end "10/13/2012"
 
 # List of extra Neiros dates
 # for Erev Yom Tov
 set neiroslist [list]
 set neirosdates [list \
+    09/28/2011 \
+    10/12/2011 \
     10/19/2011 \
     04/12/2012 \
     09/16/2012 \
