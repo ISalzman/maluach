@@ -127,42 +127,34 @@ namespace eval ::astronomica::deltaT {
 	2011 66.325
 
 	# Future predictions
-	2012 68.0
-	2013 68.0
-	2014 69.0
-	2015 69.0
-	2016 70.0
-	2017 70.0
+	2012 66.8
+	2013 67.3
+	2014 67.7
+	2015 68.0
+	2016 69.0
+	2017 69.0
+        2018 70.0
+        2019 70.0
+        2020 71.0
     }
 
-    proc Init {} {
-	variable deltaTdata
-	variable deltaTdict
+    variable deltaTdict
+    set deltaTdict [dict create]
 
-	set deltaTdict [dict create]
+    foreach line [split $deltaTdata "\n"] {
+        set line [string trim $line]
+        if {($line eq "") || ([string index $line 0] eq "#")} {
+            continue
+        }
 
-	foreach line [split $deltaTdata "\n"] {
-	    set line [string trim $line]
-	    if {($line eq "") || ([string index $line 0] eq "#")} {
-		continue
-	    }
-
-	    foreach {y dt} $line {
-		dict set deltaTdict $y $dt
-	    }
-	}
-
-	return
+        lassign $line y dt
+        dict set deltaTdict $y $dt
     }
 
     proc deltaT-alt {jd} {
 	variable deltaTdict
 
-	if {! [info exists deltaTdict] || [dict size $deltaTdict] == 0} {
-	    Init
-	}
-
-	set y [YearFraction $jd]
+	set y [FractionalYear $jd]
 	set t [expr {($y - 2000) / 100.0}]
 
 	if {[dict exists $deltaTdict [expr {int($y)}]]} {
@@ -190,11 +182,7 @@ namespace eval ::astronomica::deltaT {
     proc deltaT {jd} {
 	variable deltaTdict
 
-	if {! [info exists deltaTdict] || [dict size $deltaTdict] == 0} {
-	    Init
-	}
-
-	set y [YearFraction $jd]
+	set y [FractionalYear $jd]
 
 	if {[dict exists $deltaTdict [expr {int($y)}]]} {
 	    set dt [dict get $deltaTdict [expr {int($y)}]]
@@ -239,11 +227,17 @@ namespace eval ::astronomica::deltaT {
 	    set dt [expr {62.92 + 32.217*$u + 55.89*$u**2}]
 	} elseif {$y <= 2150} {
 	    set u [expr {($y - 1820) / 100.0}]
+            # Same as: -20 + 32*((y-1820)/100)^2 - 0.5628*(2150-y)
 	    set dt [expr {-205.724 + 56.28*$u + 32*$u**2}]
-	}
+	} else {
+            set u [expr {($y - 1820) / 100.0}]
+            set dt [expr {-20 + 32*$u**2}]
+        }
+
+        return $dt
     }
 
-    proc YearFraction {jd} {
+    proc FractionalYear {jd} {
 	lassign [date::ymd $jd] y m d
 	set jd0 [date::jd $y 1 1]
 	set days [expr {[date::isLeap $y] ? 366 : 365}]
