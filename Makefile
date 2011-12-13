@@ -84,15 +84,9 @@ vfsclean:
 header: $(APPSRCS)
 	$(NAGELFAR) -header header $(filter-out %pkgIndex.tcl, $(APPSRCS) \
 	    $(foreach dir,$(APPLIBS),$(addprefix $(dir)/,$(shell $(MAKE) -s -C $(dir) libsrcs))) \
-	    $(foreach dir,$(EXTLIBS),\
-		$(if $(findstring tcl8,$(notdir $(dir))),\
-		$(foreach sub,$(wildcard $(dir)/*),$(wildcard $(sub)/*.tm)),\
-		$(wildcard $(dir)/*.tcl))))
+	    $(foreach dir,$(EXTLIBS),$(shell find $(dir) -name '*.tcl' -o -name '*.tm')))
 
 tags: $(APPSRCS)
 	$(CTAGS) --langmap=tcl:+.tm $(filter-out %pkgIndex.tcl, $(APPSRCS) \
 	    $(foreach dir,$(APPLIBS),$(addprefix $(dir)/,$(shell $(MAKE) -s -C $(dir) libsrcs))) \
-	    $(foreach dir,$(EXTLIBS),\
-		$(if $(findstring tcl8,$(notdir $(dir))),\
-		$(foreach sub,$(wildcard $(dir)/*),$(wildcard $(sub)/*.tm)),\
-		$(wildcard $(dir)/*.tcl))))
+	    $(foreach dir,$(EXTLIBS),$(shell find $(dir) -name '*.tcl' -o -name '*.tm')))
