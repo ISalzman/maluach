@@ -7,10 +7,19 @@ namespace eval ::astronomica::deltaT {
     # Dynamical Time
     ################
 
+    # dT = TT - UT1
+    #    = TAI + 32.184 - UT1
+    #    = UTC + dAT + 32.184 - UT1
+    #    = -(UT1 - UTC) + dAT + 32.184
+    #
+    # dAT = TAI - UTC
+    #     = sum of leap seconds
+
     # Data taken from:
-    # ftp://maia.usno.navy.mil/ser7/deltat.data
-    # ftp://maia.usno.navy.mil/ser7/deltat.preds
-    # ftp://maia.usno.navy.mil/ser7/historic_deltat.data
+    # http://maia.usno.navy.mil/ser7/tai-utc.dat
+    # http://maia.usno.navy.mil/ser7/deltat.data
+    # http://maia.usno.navy.mil/ser7/deltat.preds
+    # http://maia.usno.navy.mil/ser7/historic_deltat.data
 
     variable deltaTdata {
 	1900 -2.70
@@ -125,17 +134,20 @@ namespace eval ::astronomica::deltaT {
 	2009 65.777
 	2010 66.070
 	2011 66.325
+        2012 66.603
+        2013 66.907
 
 	# Future predictions
-	2012 66.8
-	2013 67.3
-	2014 67.7
-	2015 68.0
-	2016 69.0
+	2014 67.267
+	2015 67.9
+	2016 68.4
 	2017 69.0
-        2018 70.0
+        2018 69.0
         2019 70.0
-        2020 71.0
+        2020 70.0
+        2021 71.0
+        2022 71.0
+        2023 72.0
     }
 
     variable deltaTdict
@@ -178,7 +190,8 @@ namespace eval ::astronomica::deltaT {
 	return $dt
     }
 
-    # Taken from http://eclipse.gsfc.nasa.gov/SEhelp/deltatpoly2004.html
+    # Taken from http://eclipse.gsfc.nasa.gov/SEhelp/deltaT.html
+    # and http://www.staff.science.uu.nl/~gent0113/deltat/deltat.htm
     proc deltaT {jd} {
 	variable deltaTdict
 
