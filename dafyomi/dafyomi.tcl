@@ -1,7 +1,5 @@
 
-package require Tcl 8.5
 package require msgcat
-package provide dafyomi 1.0
 
 namespace eval ::dafyomi {
     variable library [file dirname [file normalize [info script]]]

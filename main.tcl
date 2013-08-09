@@ -3,21 +3,20 @@
 package require Tcl 8.5
 package require starkit
 
-switch -exact -- [starkit::startup] {
+::starkit::startup
+
+switch -exact -- $::starkit::mode {
     sourced {return}
+    starkit {::tcl::tm::roots [list [file join $::starkit::topdir lib]]}
+    starpack {}
 
     unwrapped {
-	starkit::autoextend $::starkit::topdir
+	::starkit::autoextend $::starkit::topdir
         ::tcl::tm::roots [list $::starkit::topdir]
     }
 
-    starkit {
-        ::tcl::tm::roots [list [file join $::starkit::topdir lib]]
-    }
 
-    starpack {}
-
-    default {}
+    default {return}
 }
 
 package require maluach

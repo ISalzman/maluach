@@ -1,33 +1,35 @@
 
 TOPDIR := ..
+VERSION := $(shell cat VERSION)
 
 LIBNAME := dafyomi
-LIBSRCS := dafyomi.tcl pkgIndex.tcl
-
+LIBSRCS := dafyomi.tcl
 MSGSDIR := msgs
-MSGSRCS := $(MSGSDIR)/he.msg
 
 LIBVDIR = $(VFSLIB)/$(LIBNAME)
 MSGVDIR = $(LIBVDIR)/$(MSGSDIR)
-LIBOBJS = $(addprefix $(LIBVDIR)/,$(LIBSRCS))
-MSGOBJS = $(addprefix $(MSGVDIR)/,$(notdir $(MSGSRCS)))
+LIBOBJS = $(addprefix $(LIBVDIR)/,$(LIBSRCS) pkgIndex.tcl)
+MSGOBJS = $(addprefix $(LIBVDIR)/,$(shell find $(MSGSDIR) -type f))
 
 include $(TOPDIR)/common.mk
 
 ifneq ($(MAKELEVEL),0)
     all: $(LIBOBJS) $(MSGOBJS)
 
-    $(LIBVDIR): $(VFSLIB)
+    $(LIBVDIR): | $(VFSLIB)
 	$(MKDIR) $@
 
-    $(MSGVDIR): $(LIBVDIR)
+    $(MSGVDIR): | $(LIBVDIR)
 	$(MKDIR) $@
 
-    $(LIBOBJS): $(LIBVDIR) $(LIBSRCS)
-	$(CP) $(notdir $@) $(LIBVDIR)
+    $(LIBVDIR)/pkgIndex.tcl: pkgIndex.tcl.in VERSION | $(LIBVDIR)
+	$(SED) 's%@VERSION@%$(VERSION)%' $< > $@
 
-    $(MSGOBJS): $(MSGVDIR) $(MSGSRCS)
-	$(CP) $(MSGSDIR)/$(notdir $@) $(MSGVDIR)
+    $(filter-out %pkgIndex.tcl, $(LIBOBJS)): $(LIBVDIR)/% : % | $(LIBVDIR)
+	$(CP) $< $@
+
+    $(MSGOBJS): $(MSGVDIR)/% : $(MSGSDIR)/% | $(MSGVDIR)
+	$(CP) $< $@
 
     vfsclean:
 	-$(RM) $(LIBOBJS)

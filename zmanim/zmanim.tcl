@@ -1,7 +1,5 @@
 
-package require Tcl 8.5
 package require astronomica
-package provide zmanim 1.0
 
 namespace eval ::zmanim {
     namespace path {::tcl::mathfunc ::tcl::mathop}

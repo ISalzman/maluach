@@ -1,8 +1,10 @@
 if {![package vsatisfies [package provide Tcl] 8.5]} {return}
-package ifneeded maluach 1.0 [list apply {dir {
+set ver @VERSION@
+namespace eval ::maluach {}
+package ifneeded maluach $ver [list apply {{dir ver} {
 	uplevel #0 [list source [file join $dir maluach.tcl]]
 	uplevel #0 [list source [file join $dir date.tcl]]
 	uplevel #0 [list source [file join $dir calendar.tcl]]
 	uplevel #0 [list source [file join $dir location.tcl]]
-	package provide maluach 1.0
-    }} $dir]
+	package provide maluach $ver
+    } maluach} $dir $ver]

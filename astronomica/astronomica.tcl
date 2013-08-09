@@ -2,9 +2,6 @@
 # Based on Astronomical Algorithms, Second Edition by Jean Meeus, 1998
 # Code ideas from PJ Naughter (http://www.naughter.com/aa.html)
 
-package require Tcl 8.5
-package provide astronomica 1.0
-
 namespace eval ::astronomica {
     variable library [file dirname [file normalize [info script]]]
 

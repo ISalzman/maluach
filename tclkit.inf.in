@@ -1,0 +1,10 @@
+FileDescription "Tclsh Application"
+FileVersion @VERSION@
+LegalCopyright "Copyright (c) 2013 by Some Company"
+OriginalFilename "maluach.exe"
+CompanyName "Some Company"
+ProductName "Maluach"
+ProductVersion @VERSION@
+InternalName "maluach"
+LegalTrademarks ""
+Comments ""

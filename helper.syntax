@@ -1,0 +1,7 @@
+##nagelfar syntax {dict with} l x* cl
+
+##nagelfar syntax ::tcl::tm::roots 1
+##nagelfar syntax ::starkit::startup 0
+##nagelfar syntax ::starkit::autoextend 1
+##nagelfar syntax ::http::geturl r 1
+##nagelfar syntax ::http::cleanup 1

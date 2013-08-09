@@ -1,5 +1,7 @@
 if {![package vsatisfies [package provide Tcl] 8.5]} {return}
-package ifneeded astronomica 1.0 [list apply {dir {
+set ver @VERSION@
+namespace eval ::astronomica {}
+package ifneeded astronomica $ver [list apply {{dir ver} {
 	uplevel #0 [list source [file join $dir astronomica.tcl]]
 	uplevel #0 [list source [file join $dir aberration.tcl]]
 	uplevel #0 [list source [file join $dir date.tcl]]
@@ -17,5 +19,5 @@ package ifneeded astronomica 1.0 [list apply {dir {
 	uplevel #0 [list source [file join $dir solstice.tcl]]
 	uplevel #0 [list source [file join $dir sun.tcl]]
 	uplevel #0 [list source [file join $dir transform.tcl]]
-	package provide astronomica 1.0
-    }} $dir]
+	package provide astronomica $ver
+    } astronomica} $dir $ver]

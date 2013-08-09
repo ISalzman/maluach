@@ -1,0 +1,7 @@
+if {![package vsatisfies [package provide Tcl] 8.5]} {return}
+set ver @VERSION@
+namespace eval ::dafyomi {}
+package ifneeded dafyomi $ver [list apply {{dir ver} {
+	uplevel #0 [list source [file join $dir dafyomi.tcl]]
+	package provide dafyomi $ver
+    } dafyomi} $dir $ver]
